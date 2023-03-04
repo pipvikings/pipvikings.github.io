@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>At School on 首頁介紹</title>
+    <link>https://pipvkings.github.io/docs/example/table-of-contents/</link>
+    <description>Recent content in At School on 首頁介紹</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://pipvkings.github.io/docs/example/table-of-contents/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A Review at Operator Overloading</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/operator-overloading/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/operator-overloading/</guid>
+      <description>A Review at Operator Overloading#Ahead all of those we define a complex class
+complex c1 (5, 1);complex c2 (2);c2 += c1;c2 += c1 += c1; Our aims are obvious: to define a bunch of valid operator overloadings
+inline complex&amp;amp; complex::operator += (const complex&amp;amp; r) {return __doapl(this, r);}inline complex&amp;amp; __doapl(complex* ths, const complex&amp;amp; r) {ths-&amp;gt;re += r.re;ths-&amp;gt;im += r.im;return *ths;} Those 2 snippets of code comes from standard lib, seemingly simple but in fact have a complex design perspective</description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43; IO的简单复习</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/cppio/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/cppio/</guid>
+      <description>前言#从第一行hello world开始，很多人就对C++ IO的使用非常模糊，接下来简单讨论一下C++的IO，C语言的printf()和scanf()无法直接打印一个用户自定义类，因为它并无运算符重载，而C++可以通过重载iostream来达到这个效果，我们可以直观的看出printf()和和scanf()是基于funtion的（只是函数），而cin和cout是基于对象的（因为cin和cout分别是ostream和istream的对象）。
+我们最常用的就是iostream，涵盖了cin，cout，cerr，clog四个对象和wcin，wcout，wcerr，wclog四个宽字符的用法，深究它到底引用了哪些头文件过于错综复杂，并无实战意义。 cout和&amp;lt;&amp;lt;为什么可以连续操作符重载#cout是ostream的对象，指向显示器屏幕，是iostream中的全局对象，而连续使用cout &amp;lt;&amp;lt;的本质是什么呢？比如：
+cout &amp;lt;&amp;lt; &amp;#34;far&amp;#34; &amp;lt;&amp;lt; &amp;#34;boo&amp;#34; &amp;lt;&amp;lt; endl; 可以看作是执行了
+ostream&amp;amp; operator&amp;lt;&amp;lt;(ostream &amp;amp;temp,int source);ostream&amp;amp; operator&amp;lt;&amp;lt;(ostream &amp;amp;temp,char *ps);.... 因为cout本身就是ostream的对象，而cout &amp;lt;&amp;lt; &amp;quot;far&amp;quot;的返回本身又是一个ostream&amp;amp;，所以可以连续使用&amp;lt;&amp;lt;。
+fstream##include &amp;lt;fstream&amp;gt; using namespace std; int main() { ofstream myfile(&amp;#34;my_path&amp;#34;,ios::out|ios::trunc,0); myfile&amp;lt;&amp;lt;&amp;#34;far&amp;#34;; myfile.close() system(&amp;#34;pause&amp;#34;); } 等同于
+#include &amp;lt;iostream&amp;gt; #include &amp;lt;fstream&amp;gt; using namespace std; int main() { ofstream myfile; myfile.open(&amp;#34;my_path&amp;#34;,ios::out|ios::app,0); if(!myfile){ cout&amp;lt;&amp;lt;&amp;#34;failed open file&amp;#34;; system(&amp;#34;pause&amp;#34;); exit(1); } myfile&amp;lt;&amp;lt;&amp;#34;far&amp;#34;;myfile.</description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43;的线程同步</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/cpp_thread/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/cpp_thread/</guid>
+      <description>进程和线程#（假定使用C++或C面向服务器编程）
+并行（Concurrent）和并发（parallel）的区别是：单核CPU内的Multi Thread叫做Concurrent，而多核时代的Multi Thread叫做Parallel，即：真正存在在一个时刻多个Thread在执行而不是一个时间时刻多个Thread在执行。
+同时应运而生的有超线程技术，例如：四核八线程CPU代表了单核会有2个Thread在运行。面试考的有多线程并发和多进程并发，多进程并发涉及进程之间的七种沟通方式：pipe，semafore，fifo，message queue，shared memory，socket，signal。
+不论哪一种都涉及大量底层API，每一个功能包括的头文件全都不一样，在这里把这七种全介绍完，相当于用中文复述一遍Advanced Unix Programming Environment半本书的内容，而且目测这些内容的考题已经逼近社招的难度，所以在这里没必要赘述。
+相比我们已经粗略了解多进程编程相比于多线程编程的优势和劣势，那么接下来简单介绍一下多线程的背景。经过查阅各种博客，发现C++11标准库包括了多线程的部分、包括了锁的部分，也就是说C++11之前的程序全部都是用Linux下的pthread、Linux内置的lock（排除三方库），那么对于C++的多进程支持呢？很巧，只有Boost库支持，那么我们如果不用Boost库，就只能用纯C混搭C++来支持多进程。以上，就是对于这个话题的粗略回顾。
+以下C++的例子来自于cpp reference，通过这些例子，我们可以大概了解S锁和X锁的原型
+std::threading#Class to represent individual threads of execution. std::thread类表示了执行中的单独线程
+A thread of execution is a sequence of instructions that can be executed concurrently with other such sequences in multithreading environments, while sharing a same address space. 执行中的线程是一系列指令的组合，这些指令可以在多线程环境下与其他指令并发执行，并共享同一寻址空间。
+An initialized thread object represents an active thread of execution; Such a thread object is joinable, and has a unique thread id.</description>
+    </item>
+    
+    <item>
+      <title>lseek和空洞文件</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/lseek/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/lseek/</guid>
+      <description>file discriptor的含义#linux中有三种标准输入输出，分别是stdin，stdout，stderr，对应的数字是0、1、2。stdin是标准输入，默认从键盘读取信息；stdout是标准输出，默认将输出结果输出至终端；stderr是标准错误，默认将输出结果输出至终端。最常用的fd是0，1，2，这并不代表fd只能包含这三个数字，文件类型远不止标准输入输出这三个，还有管道、socket、目录等，可以通过修改配置文件解放fd数量的上限。
+空洞文件的含义#空洞文件是UNIX操作系统的一个概念，是文件指针的偏移量可以大过这个文件本身，于是乎产生了空洞，目的是为了让多线程同时写这个文件（因为文件中可以制造很多空洞）。注意：不一定制造空洞文件等于预先制造大量的空间，因为这取决于上层文件系统如何实现。
+&amp;lt;unistd.h&amp;gt;和lseek#unistd.h是C和C++提供对POSIX操作系统API访问功能头文件的名称，是Unix Standard的缩写。该头文件由POSIX标准（单一UNIX规范的基础）提出，所有遵循该标准的操作系统和编译器均应提供该头文件（Unix的所有官方版本）。对于类 Unix系统，unistd.h中所定义的接口通常都是大量针对系统调用的封装（wrapper functions），如fork、pipe以及各种IO原语（read、write、close等等）。类似于Cygwin和MinGW的Unix兼容层也提供相应版本的unistd.h 综上浅显的分析一下：
+Windows 是没有lseek的，MacOS和Linux有lseek lseek也不是C或者C++标准库的，属于系统调用范畴 lseek需要两个头文件：第一个是unistd.h，第二个是sys/types.h，sys/types.h描述了不同的类型，也是POSIX的东西
+current file offset#所有打开的文件都有一个当前文件偏移量（current file offset），简称为cfo。cfo通常是一个非负整数，用于表明文件开始处到文件当前位置的字节数，读写操作通常开始于cfo，并且使cfo增大，增量为读写的字节数。文件被打开时，cfo 会被初始化为0，除非使用了O_APPEND参数
+lseek#函数原型为off_t lseek(int filedis, off_t offset, int whence)，成功返回偏移量，失败返回-1（对socket和pipe也返回-1），off_t类型用于指示文件的偏移量，通常是是long类型，其默认为一个32位的整数，在gcc编译中会被编译为long int类型，在64位的Linux系统中则会被编译为long long int，一个64位的整数，其定义在unistd.h头文件中可以查看。 注意：应该判断lseek是否返回-1来判断对错而不是判断是否&amp;lt;0，因为cfo也有可能是负偏移。
+如果whence是SEEK_SET，文件偏移量将被设置为offset。 如果whence是SEEK_CUR，文件偏移量将被设置为cfo加上offset，offset可以为正也可以为负。 如果whence是SEEK_END，文件偏移量将被设置为文件长度加上offset，offset可以为正也可以为负。 c++ alternative solution#// read a file into memory#include &amp;lt;iostream&amp;gt; // std::cout#include &amp;lt;fstream&amp;gt; // std::ifstreamint main () {std::ifstream is (&amp;#34;test.txt&amp;#34;, std::ifstream::binary);if (is) {// get length of file:is.</description>
+    </item>
+    
+    <item>
+      <title>shared_ptr的用例</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/shared_p/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/shared_p/</guid>
+      <description>std::make_shared#std::pair的first和second是第一个成员和第二个成员，第一个first和第二个second可以不一样
+// make_pair example#include &amp;lt;utility&amp;gt; // std::pair#include &amp;lt;iostream&amp;gt; // std::coutint main () {std::pair &amp;lt;int,int&amp;gt; foo;std::pair &amp;lt;int,int&amp;gt; bar;foo = std::make_pair (10,20);bar = std::make_pair (10.5,&amp;#39;A&amp;#39;); // ok: implicit conversion from pair&amp;lt;double,char&amp;gt;std::cout &amp;lt;&amp;lt; &amp;#34;foo: &amp;#34; &amp;lt;&amp;lt; foo.first &amp;lt;&amp;lt; &amp;#34;, &amp;#34; &amp;lt;&amp;lt; foo.second &amp;lt;&amp;lt; &amp;#39;\n&amp;#39;;std::cout &amp;lt;&amp;lt; &amp;#34;bar: &amp;#34; &amp;lt;&amp;lt; bar.first &amp;lt;&amp;lt; &amp;#34;, &amp;#34; &amp;lt;&amp;lt; bar.second &amp;lt;&amp;lt; &amp;#39;\n&amp;#39;;return 0;} // pair::operator= example#include &amp;lt;utility&amp;gt; // std::pair, std::make_pair#include &amp;lt;string&amp;gt; // std::string#include &amp;lt;iostream&amp;gt; // std::coutint main () {std::pair &amp;lt;std::string,int&amp;gt; planet, homeplanet;planet = std::make_pair(&amp;#34;Earth&amp;#34;,6371);homeplanet = planet;std::cout &amp;lt;&amp;lt; &amp;#34;Home planet: &amp;#34; &amp;lt;&amp;lt; homeplanet.</description>
+    </item>
+    
+    <item>
+      <title>unique_ptr的用例</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/uniq_p/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/uniq_p/</guid>
+      <description>// unique_ptr constructor example#include &amp;lt;iostream&amp;gt;#include &amp;lt;memory&amp;gt;int main () {std::default_delete&amp;lt;int&amp;gt; d;std::unique_ptr&amp;lt;int&amp;gt; u1;std::unique_ptr&amp;lt;int&amp;gt; u2 (nullptr);std::unique_ptr&amp;lt;int&amp;gt; u3 (new int);std::unique_ptr&amp;lt;int&amp;gt; u4 (new int, d);std::unique_ptr&amp;lt;int&amp;gt; u5 (new int, std::default_delete&amp;lt;int&amp;gt;());std::unique_ptr&amp;lt;int&amp;gt; u6 (std::move(u5));std::unique_ptr&amp;lt;int&amp;gt; u7 (std::move(u6));std::unique_ptr&amp;lt;int&amp;gt; u8 (std::auto_ptr&amp;lt;int&amp;gt;(new int));std::cout &amp;lt;&amp;lt; &amp;#34;u1: &amp;#34; &amp;lt;&amp;lt; (u1?&amp;#34;not null&amp;#34;:&amp;#34;null&amp;#34;) &amp;lt;&amp;lt; &amp;#39;\n&amp;#39;;std::cout &amp;lt;&amp;lt; &amp;#34;u2: &amp;#34; &amp;lt;&amp;lt; (u2?&amp;#34;not null&amp;#34;:&amp;#34;null&amp;#34;) &amp;lt;&amp;lt; &amp;#39;\n&amp;#39;;std::cout &amp;lt;&amp;lt; &amp;#34;u3: &amp;#34; &amp;lt;&amp;lt; (u3?&amp;#34;not null&amp;#34;:&amp;#34;null&amp;#34;) &amp;lt;&amp;lt; &amp;#39;\n&amp;#39;;std::cout &amp;lt;&amp;lt; &amp;#34;u4: &amp;#34; &amp;lt;&amp;lt; (u4?</description>
+    </item>
+    
+    <item>
+      <title>对操作符重载的学习</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/operator-overloading-zh/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/operator-overloading-zh/</guid>
+      <description>A Review at Operator Overloading#首先定义两个复数类，并使用+=使这两个类相加。
+complex c1 (5, 1);complex c2 (2);c2 += c1;c2 += c1 += c1; 我们的目标是实现一组合格的操作符重载。
+inline complex&amp;amp; complex::operator += (const complex&amp;amp; r) {return __doapl(this, r);}inline complex&amp;amp; __doapl(complex* ths, const complex&amp;amp; r) {ths-&amp;gt;re += r.re;ths-&amp;gt;im += r.im;return *ths;} inline#inline牵扯到编译器认为此段代码何时应该展开的实现细节，很难在此论述它的含义，有兴趣可以去看gcc的实现
+__doapl的设计考量#这种设计目的是为了将goal和functional process分离，比如我要做A，A包括了2个很common的动作X和Y，那么X、Y都应当单独封装
+do A() { X; Y; }do X() {}do Y() {} 类内和类外#众所周知，操作符重载还有另一种常见的形式</description>
+    </item>
+    
+    <item>
+      <title>操作系统中的进程和锁</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/os-review/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/os-review/</guid>
+      <description>Process#进程是执行中的程序，包括文本段（代码段），程序计数器，处理器寄存器内容，stack段（临时数据，函数参数，返回地址，局部变量），数据段（全局变量），heap段（动态内存）。 内存中的进程如如图所示： 进程在操作系统中以PCB表示，如图，有：
+进程状态：如图 Program Counter：下一个进程地址 CPU Register：累加器，索引寄存器，堆栈指针，通用寄存器，条件码寄存器（出现中断后要保存好） 调度信息：进程优先级，调度队列指针。 Memory Management：This information may include such information as the value of the base and limit registers, the page tables, or the segment tables, depending on the memory system used by the operating system Accounting: This information includes the amount of CPU and real time used, time limits, account numbers, job or process numbers, and so on. I/O: This information includes the list of I/O devices allocated to the process, a list of open files, and so on.</description>
+    </item>
+    
+    <item>
+      <title>智能指针</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/smart_pointer/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/smart_pointer/</guid>
+      <description>智能指针#unique_ptr#允许指针有一个所有权，用unique ptr作为首选，除非你知道你确定要用shared ptr。unique ptr的所有权可以被移给一个新的owner，但是不能copied or shared。shared ptr旨在替换废弃的auto ptr，unique ptr比boost库的scoped ptr要好，它的尺寸仅占一个指针的位置且支持右值引用（为了插入删除获取快一些）
+shared_ptr#引用计数的指针，Use when you want to assign one raw pointer to multiple owners，用这个。
+比如当返回一个指针的copy的时候（并保留原来的），这个时候，就要用shared ptr，此指针不会被删除，直到它的shared_ptr离开作用域之外。
+它的尺寸是两个指针大小，第一块是为了储存那个对象，第二块是shared control block，包含引用计数。
+weak_ptr#和shared ptr搭配的指针，一个weak ptr给一个被多个shared ptr指针指向的对象提供访问的通道，但是并不参与reference counting。
+Special-case smart pointer for use in conjunction with shared_ptr. A weak_ptr provides access to an object that is owned by one or more shared_ptr instances, but does not participate in reference counting.</description>
+    </item>
+    
+    <item>
+      <title>浅谈C&#43;&#43;中的类型转换</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/type-casting-zh/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/type-casting-zh/</guid>
+      <description>implicit conversation overview#implicit conversion: int to short, short to int, short to bool, float to bool &amp;hellip;. (without explicit converter), also called standard conversion.
+converting type such as int to float is known as promotion, is guaranteed to produced the same value in the destination type otherwise, may not always be able to represent the same value exactly (丢失精度问题，编译器会发出警告，可以通过explicit conversion去消除) for non-fundamental types: arrays and functions implicitly convert to pointers pointers in general allow the following conversions: Null pointers can be converted to pointers of any type Pointers to any type can be converted to void pointers.</description>
+    </item>
+    
+    <item>
+      <title>滑动窗口</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/sliding_windows_prot/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/sliding_windows_prot/</guid>
+      <description>滑动窗口#滑动窗口的净代码量不超过十行，但是这十行废了我两天的功夫还没搞清楚
+class Solution {public:int lengthOfLongestSubstring(string s) {if(s.length() == 0) {return 0;}int left = 0;int right = 0;int res = 0;vector&amp;lt;int&amp;gt; char_vec(128, -1);while(right &amp;lt;= s.length() - 1) {char right_char = s[right];int index = char_vec[right_char];if(index != -1 &amp;amp;&amp;amp; index &amp;gt;= left &amp;amp;&amp;amp; index &amp;lt;= right) {left = index + 1;}res = max(res, right - left + 1);char_vec[right_char] = right;++right;}return res;}}; 上面是lc上别人已经ac的答案，我们来顺一遍当输入是abcabcbb时是怎么个情况。</description>
+    </item>
+    
+    <item>
+      <title>裸指针和其修饰字</title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/rawp/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/rawp/</guid>
+      <description>指针的定义#指针的定义：指针是存储对象内存地址的变量
+C和C++指针的用法有：
+分配堆内存的新对象 向一个函数传递另外一个函数 迭代数组或其他数据结构中的元素 在C风格的编程中，裸指针适用于上述三种描述。但是裸指针是导致很多问题的元凶，因此除非在有显著性能优势且清楚在删除对象时哪个指针有最终的所有权时，不要用裸指针。&amp;mdash;-msdn
+现代C++提供智能指针来负责分配对象、迭代器和遍历数据结构们，以及传递函数时使用的lambda表达式。
+裸指针#指针是变量，它存储对象在内存中的地址，它也用于访问对象。裸指针的定义是：生命周期不受封装对象控制的指针，这不同于智能指针。裸指针可以被赋值为另一个非指针变量的地址，或者可以被赋值为nullptr，未被赋值的裸指针随机被赋值一个地址。 指针可以被取消引用（dereference），返回它指向的对象值。
+int* p = nullptr; // declare pointer and initialize it// so that it doesn&amp;#39;t store a random addressint i = 5;p = &amp;amp;i; // assign pointer to address of objectint j = *p; // dereference p to retrieve the value at its address 一个指针可以指向一个有类型的对象或者void。当一个程序在heap分配对象时，它接收这个对象的地址（以指针的形式），如此的指针叫做owing pointer，一个owing pointer（or a copy of it），在不再需要那个heap object的时候，必须显式的free掉这个指针。否则就会内存泄漏，即此内存的地址没法给任何其他的程序去用了。用new分配出来的内存必须搭配delete或者delete[]。
+MyClass* mc = new MyClass(); // allocate object on the heapmc-&amp;gt;print(); // access class memberdelete mc; // delete object (please don&amp;#39;t forget!</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://pipvkings.github.io/docs/example/table-of-contents/b_tree/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/table-of-contents/b_tree/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

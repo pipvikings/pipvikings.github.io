@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="file discriptor的含义#linux中有三种标准输入输出，分别是stdin，stdout，stderr，对应的数字是0、1、2。stdin是标准输入，默认从键盘读取信息；stdout是标准输出，默认将输出结果输出至终端；stderr是标准错误，默认将输出结果输出至终端。最常用的fd是0，1，2，这并不代表fd只能包含这三个数字，文件类型远不止标准输入输出这三个，还有管道、socket、目录等，可以通过修改配置文件解放fd数量的上限。
+空洞文件的含义#空洞文件是UNIX操作系统的一个概念，是文件指针的偏移量可以大过这个文件本身，于是乎产生了空洞，目的是为了让多线程同时写这个文件（因为文件中可以制造很多空洞）。注意：不一定制造空洞文件等于预先制造大量的空间，因为这取决于上层文件系统如何实现。
+&lt;unistd.h&gt;和lseek#unistd.h是C和C&#43;&#43;提供对POSIX操作系统API访问功能头文件的名称，是Unix Standard的缩写。该头文件由POSIX标准（单一UNIX规范的基础）提出，所有遵循该标准的操作系统和编译器均应提供该头文件（Unix的所有官方版本）。对于类 Unix系统，unistd.h中所定义的接口通常都是大量针对系统调用的封装（wrapper functions），如fork、pipe以及各种IO原语（read、write、close等等）。类似于Cygwin和MinGW的Unix兼容层也提供相应版本的unistd.h 综上浅显的分析一下：
+Windows 是没有lseek的，MacOS和Linux有lseek lseek也不是C或者C&#43;&#43;标准库的，属于系统调用范畴 lseek需要两个头文件：第一个是unistd.h，第二个是sys/types.h，sys/types.h描述了不同的类型，也是POSIX的东西
+current file offset#所有打开的文件都有一个当前文件偏移量（current file offset），简称为cfo。cfo通常是一个非负整数，用于表明文件开始处到文件当前位置的字节数，读写操作通常开始于cfo，并且使cfo增大，增量为读写的字节数。文件被打开时，cfo 会被初始化为0，除非使用了O_APPEND参数
+lseek#函数原型为off_t lseek(int filedis, off_t offset, int whence)，成功返回偏移量，失败返回-1（对socket和pipe也返回-1），off_t类型用于指示文件的偏移量，通常是是long类型，其默认为一个32位的整数，在gcc编译中会被编译为long int类型，在64位的Linux系统中则会被编译为long long int，一个64位的整数，其定义在unistd.h头文件中可以查看。 注意：应该判断lseek是否返回-1来判断对错而不是判断是否&lt;0，因为cfo也有可能是负偏移。
+如果whence是SEEK_SET，文件偏移量将被设置为offset。 如果whence是SEEK_CUR，文件偏移量将被设置为cfo加上offset，offset可以为正也可以为负。 如果whence是SEEK_END，文件偏移量将被设置为文件长度加上offset，offset可以为正也可以为负。 c&#43;&#43; alternative solution#// read a file into memory#include &lt;iostream&gt; // std::cout#include &lt;fstream&gt; // std::ifstreamint main () {std::ifstream is (&#34;test.txt&#34;, std::ifstream::binary);if (is) {// get length of file:is.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="lseek和空洞文件" />
+<meta property="og:description" content="file discriptor的含义#linux中有三种标准输入输出，分别是stdin，stdout，stderr，对应的数字是0、1、2。stdin是标准输入，默认从键盘读取信息；stdout是标准输出，默认将输出结果输出至终端；stderr是标准错误，默认将输出结果输出至终端。最常用的fd是0，1，2，这并不代表fd只能包含这三个数字，文件类型远不止标准输入输出这三个，还有管道、socket、目录等，可以通过修改配置文件解放fd数量的上限。
+空洞文件的含义#空洞文件是UNIX操作系统的一个概念，是文件指针的偏移量可以大过这个文件本身，于是乎产生了空洞，目的是为了让多线程同时写这个文件（因为文件中可以制造很多空洞）。注意：不一定制造空洞文件等于预先制造大量的空间，因为这取决于上层文件系统如何实现。
+&lt;unistd.h&gt;和lseek#unistd.h是C和C&#43;&#43;提供对POSIX操作系统API访问功能头文件的名称，是Unix Standard的缩写。该头文件由POSIX标准（单一UNIX规范的基础）提出，所有遵循该标准的操作系统和编译器均应提供该头文件（Unix的所有官方版本）。对于类 Unix系统，unistd.h中所定义的接口通常都是大量针对系统调用的封装（wrapper functions），如fork、pipe以及各种IO原语（read、write、close等等）。类似于Cygwin和MinGW的Unix兼容层也提供相应版本的unistd.h 综上浅显的分析一下：
+Windows 是没有lseek的，MacOS和Linux有lseek lseek也不是C或者C&#43;&#43;标准库的，属于系统调用范畴 lseek需要两个头文件：第一个是unistd.h，第二个是sys/types.h，sys/types.h描述了不同的类型，也是POSIX的东西
+current file offset#所有打开的文件都有一个当前文件偏移量（current file offset），简称为cfo。cfo通常是一个非负整数，用于表明文件开始处到文件当前位置的字节数，读写操作通常开始于cfo，并且使cfo增大，增量为读写的字节数。文件被打开时，cfo 会被初始化为0，除非使用了O_APPEND参数
+lseek#函数原型为off_t lseek(int filedis, off_t offset, int whence)，成功返回偏移量，失败返回-1（对socket和pipe也返回-1），off_t类型用于指示文件的偏移量，通常是是long类型，其默认为一个32位的整数，在gcc编译中会被编译为long int类型，在64位的Linux系统中则会被编译为long long int，一个64位的整数，其定义在unistd.h头文件中可以查看。 注意：应该判断lseek是否返回-1来判断对错而不是判断是否&lt;0，因为cfo也有可能是负偏移。
+如果whence是SEEK_SET，文件偏移量将被设置为offset。 如果whence是SEEK_CUR，文件偏移量将被设置为cfo加上offset，offset可以为正也可以为负。 如果whence是SEEK_END，文件偏移量将被设置为文件长度加上offset，offset可以为正也可以为负。 c&#43;&#43; alternative solution#// read a file into memory#include &lt;iostream&gt; // std::cout#include &lt;fstream&gt; // std::ifstreamint main () {std::ifstream is (&#34;test.txt&#34;, std::ifstream::binary);if (is) {// get length of file:is." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://pipvkings.github.io/docs/example/table-of-contents/lseek/" /><meta property="article:section" content="docs" />
+
+
+<title>lseek和空洞文件 | 首頁介紹</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.a1bc3f1d714233dbb3581a7510c0be58c1aadad42dcdfaaecec1aaa38023c9e2.css" integrity="sha256-obw/HXFCM9uzWBp1EMC&#43;WMGq2tQtzfquzsGqo4AjyeI=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.f0c6fac7200a71399e3465a133f38930434c055e2ca71404d6ad0a7d22d66c03.js" integrity="sha256-8Mb6xyAKcTmeNGWhM/OJMENMBV4spxQE1q0KfSLWbAM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>首頁介紹</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Contents Post</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/" class="">After School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/meaning-of-work/" class="">上班的意義</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/2023scc/" class="">个人数据的标准合同条款</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/" class="">At School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading/" class="">A Review at Operator Overloading</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cppio/" class="">C&#43;&#43; IO的简单复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cpp_thread/" class="">C&#43;&#43;的线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/lseek/" class="active">lseek和空洞文件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/shared_p/" class="">shared_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/uniq_p/" class="">unique_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading-zh/" class="">对操作符重载的学习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/os-review/" class="">操作系统中的进程和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/smart_pointer/" class="">智能指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/type-casting-zh/" class="">浅谈C&#43;&#43;中的类型转换</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/sliding_windows_prot/" class="">滑动窗口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/rawp/" class="">裸指针和其修饰字</a>
+  
+
+        </li>
+      
+    
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>lseek和空洞文件</strong>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="file-discriptor的含义">
+  file discriptor的含义
+  <a class="anchor" href="#file-discriptor%e7%9a%84%e5%90%ab%e4%b9%89">#</a>
+</h2>
+<p>linux中有三种标准输入输出，分别是<code>stdin</code>，<code>stdout</code>，<code>stderr</code>，对应的数字是0、1、2。<code>stdin</code>是标准输入，默认从键盘读取信息；<code>stdout</code>是标准输出，默认将输出结果输出至终端；<code>stderr</code>是标准错误，默认将输出结果输出至终端。最常用的<code>fd</code>是0，1，2，这并不代表fd只能包含这三个数字，文件类型远不止标准输入输出这三个，还有管道、socket、目录等，可以通过修改配置文件解放<code>fd</code>数量的上限。</p>
+<h2 id="空洞文件的含义">
+  空洞文件的含义
+  <a class="anchor" href="#%e7%a9%ba%e6%b4%9e%e6%96%87%e4%bb%b6%e7%9a%84%e5%90%ab%e4%b9%89">#</a>
+</h2>
+<p>空洞文件是UNIX操作系统的一个概念，是文件指针的偏移量可以大过这个文件本身，于是乎产生了空洞，目的是为了让多线程同时写这个文件（因为文件中可以制造很多空洞）。注意：不一定制造空洞文件等于预先制造大量的空间，因为这取决于上层文件系统如何实现。</p>
+<h2 id="unistdh和lseek">
+  <code>&lt;unistd.h&gt;</code>和<code>lseek</code>
+  <a class="anchor" href="#unistdh%e5%92%8clseek">#</a>
+</h2>
+<p><code>unistd.h</code>是C和C++提供对POSIX操作系统API访问功能头文件的名称，是Unix Standard的缩写。该头文件由POSIX标准（单一UNIX规范的基础）提出，所有遵循该标准的操作系统和编译器均应提供该头文件（Unix的所有官方版本）。对于类 Unix系统，<code>unistd.h</code>中所定义的接口通常都是大量针对系统调用的封装（wrapper functions），如<code>fork</code>、<code>pipe</code>以及各种IO原语（<code>read</code>、<code>write</code>、<code>close</code>等等）。类似于Cygwin和MinGW的Unix兼容层也提供相应版本的<code>unistd.h</code>
+综上浅显的分析一下：</p>
+<ul>
+<li>Windows 是没有<code>lseek</code>的，MacOS和Linux有<code>lseek</code></li>
+<li><code>lseek</code>也不是C或者C++标准库的，属于系统调用范畴</li>
+</ul>
+<p><code>lseek</code>需要两个头文件：第一个是<code>unistd.h</code>，第二个是<code>sys/types.h</code>，<code>sys/types.h</code>描述了不同的类型，也是POSIX的东西</p>
+<h2 id="current-file-offset">
+  current file offset
+  <a class="anchor" href="#current-file-offset">#</a>
+</h2>
+<p>所有打开的文件都有一个当前文件偏移量（current file offset），简称为cfo。cfo通常是一个非负整数，用于表明文件开始处到文件当前位置的字节数，读写操作通常开始于cfo，并且使cfo增大，增量为读写的字节数。文件被打开时，cfo 会被初始化为0，除非使用了<code>O_APPEND</code>参数</p>
+<h2 id="lseek">
+  <code>lseek</code>
+  <a class="anchor" href="#lseek">#</a>
+</h2>
+<p>函数原型为<code>off_t lseek(int filedis, off_t offset, int whence)</code>，成功返回偏移量，失败返回-1（对socket和pipe也返回-1），<code>off_t</code>类型用于指示文件的偏移量，通常是是<code>long</code>类型，其默认为一个32位的整数，在<code>gcc</code>编译中会被编译为<code>long int</code>类型，在64位的Linux系统中则会被编译为<code>long long int</code>，一个64位的整数，其定义在<code>unistd.h</code>头文件中可以查看。
+注意：应该判断<code>lseek</code>是否返回-1来判断对错而不是判断是否&lt;0，因为cfo也有可能是负偏移。</p>
+<ul>
+<li>如果<code>whence</code>是<code>SEEK_SET</code>，文件偏移量将被设置为<code>offset</code>。</li>
+<li>如果<code>whence</code>是<code>SEEK_CUR</code>，文件偏移量将被设置为cfo加上<code>offset</code>，<code>offset</code>可以为正也可以为负。</li>
+<li>如果<code>whence</code>是<code>SEEK_END</code>，文件偏移量将被设置为文件长度加上<code>offset</code>，<code>offset</code>可以为正也可以为负。</li>
+</ul>
+<h2 id="c-alternative-solution">
+  c++ alternative solution
+  <a class="anchor" href="#c-alternative-solution">#</a>
+</h2>
+<pre tabindex="0"><code>  // read a file into memory
+  #include &lt;iostream&gt;     // std::cout
+  #include &lt;fstream&gt;      // std::ifstream
+  int main () {
+    std::ifstream is (&#34;test.txt&#34;, std::ifstream::binary);
+    if (is) {
+        // get length of file:
+        is.seekg (0, is.end);
+        int length = is.tellg();
+        is.seekg (0, is.beg);
+        // allocate memory:
+        char * buffer = new char [length];
+        // read data as a block:
+        is.read (buffer,length);
+        is.close();
+        // print content:
+        std::cout.write (buffer,length);
+        delete[] buffer;
+    }
+    return 0;
+  }
+</code></pre><p><code>seekg</code>有两个参数，第一个参数是<code>offset</code>，第二个参数是“它以何种形式偏移”</p>
+<ul>
+<li><code>ios::beg</code>：表示输入流的开始位置</li>
+<li><code>ios::cur</code>：表示输入流的当前位置</li>
+<li><code>ios::end</code>：表示输入流的结束位置</li>
+</ul>
+<pre tabindex="0"><code>istream&amp; seekg (streampos pos);
+istream&amp; seekg (streamoff off, ios_base::seekdir way);
+</code></pre><p>关于<code>streampos</code>和<code>streamoff</code>是否完全等于<code>unsigned long long int</code>，stackoverflow上有深刻的讨论，可自行了解。</p>
+<h2 id="c的seek与c的异同">
+  c++的seek与c的异同
+  <a class="anchor" href="#c%e7%9a%84seek%e4%b8%8ec%e7%9a%84%e5%bc%82%e5%90%8c">#</a>
+</h2>
+<p>和C的文件操作方式不同的是，C++ IO系统管理两个与一个文件相联系的指针。一个是读指针，它说明输入操作在文件中的位置；另一个是写指针，它下次写操作的位置。每次执行输入或输出时，相应的指针自动变化。所以C++的文件定位分为读位置和写位置的定位，对应的成员函数是<code>seekg()</code>和<code>seekp()</code>，<code>seekg()</code>是设置读位置，<code>seekp</code>是设置写位置，<code>tellp()</code>对应的是<code>tellg()</code>。</p>
+<pre tabindex="0"><code>istream &amp;seekg(streamoff offset, seek_dir origin);
+ostream &amp;seekp(streamoff offset, seek_dir origin);
+</code></pre></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

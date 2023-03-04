@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="// unique_ptr constructor example#include &lt;iostream&gt;#include &lt;memory&gt;int main () {std::default_delete&lt;int&gt; d;std::unique_ptr&lt;int&gt; u1;std::unique_ptr&lt;int&gt; u2 (nullptr);std::unique_ptr&lt;int&gt; u3 (new int);std::unique_ptr&lt;int&gt; u4 (new int, d);std::unique_ptr&lt;int&gt; u5 (new int, std::default_delete&lt;int&gt;());std::unique_ptr&lt;int&gt; u6 (std::move(u5));std::unique_ptr&lt;int&gt; u7 (std::move(u6));std::unique_ptr&lt;int&gt; u8 (std::auto_ptr&lt;int&gt;(new int));std::cout &lt;&lt; &#34;u1: &#34; &lt;&lt; (u1?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;std::cout &lt;&lt; &#34;u2: &#34; &lt;&lt; (u2?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;std::cout &lt;&lt; &#34;u3: &#34; &lt;&lt; (u3?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;std::cout &lt;&lt; &#34;u4: &#34; &lt;&lt; (u4?">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="unique_ptr的用例" />
+<meta property="og:description" content="// unique_ptr constructor example#include &lt;iostream&gt;#include &lt;memory&gt;int main () {std::default_delete&lt;int&gt; d;std::unique_ptr&lt;int&gt; u1;std::unique_ptr&lt;int&gt; u2 (nullptr);std::unique_ptr&lt;int&gt; u3 (new int);std::unique_ptr&lt;int&gt; u4 (new int, d);std::unique_ptr&lt;int&gt; u5 (new int, std::default_delete&lt;int&gt;());std::unique_ptr&lt;int&gt; u6 (std::move(u5));std::unique_ptr&lt;int&gt; u7 (std::move(u6));std::unique_ptr&lt;int&gt; u8 (std::auto_ptr&lt;int&gt;(new int));std::cout &lt;&lt; &#34;u1: &#34; &lt;&lt; (u1?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;std::cout &lt;&lt; &#34;u2: &#34; &lt;&lt; (u2?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;std::cout &lt;&lt; &#34;u3: &#34; &lt;&lt; (u3?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;std::cout &lt;&lt; &#34;u4: &#34; &lt;&lt; (u4?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://pipvkings.github.io/docs/example/table-of-contents/uniq_p/" /><meta property="article:section" content="docs" />
+
+
+<title>unique_ptr的用例 | 首頁介紹</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.a1bc3f1d714233dbb3581a7510c0be58c1aadad42dcdfaaecec1aaa38023c9e2.css" integrity="sha256-obw/HXFCM9uzWBp1EMC&#43;WMGq2tQtzfquzsGqo4AjyeI=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.f0c6fac7200a71399e3465a133f38930434c055e2ca71404d6ad0a7d22d66c03.js" integrity="sha256-8Mb6xyAKcTmeNGWhM/OJMENMBV4spxQE1q0KfSLWbAM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>首頁介紹</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Contents Post</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/" class="">After School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/meaning-of-work/" class="">上班的意義</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/2023scc/" class="">个人数据的标准合同条款</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/" class="">At School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading/" class="">A Review at Operator Overloading</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cppio/" class="">C&#43;&#43; IO的简单复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cpp_thread/" class="">C&#43;&#43;的线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/lseek/" class="">lseek和空洞文件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/shared_p/" class="">shared_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/uniq_p/" class="active">unique_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading-zh/" class="">对操作符重载的学习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/os-review/" class="">操作系统中的进程和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/smart_pointer/" class="">智能指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/type-casting-zh/" class="">浅谈C&#43;&#43;中的类型转换</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/sliding_windows_prot/" class="">滑动窗口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/rawp/" class="">裸指针和其修饰字</a>
+  
+
+        </li>
+      
+    
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>unique_ptr的用例</strong>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><pre tabindex="0"><code>// unique_ptr constructor example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::default_delete&lt;int&gt; d;
+  std::unique_ptr&lt;int&gt; u1;
+  std::unique_ptr&lt;int&gt; u2 (nullptr);
+  std::unique_ptr&lt;int&gt; u3 (new int);
+  std::unique_ptr&lt;int&gt; u4 (new int, d);
+  std::unique_ptr&lt;int&gt; u5 (new int, std::default_delete&lt;int&gt;());
+  std::unique_ptr&lt;int&gt; u6 (std::move(u5));
+  std::unique_ptr&lt;int&gt; u7 (std::move(u6));
+  std::unique_ptr&lt;int&gt; u8 (std::auto_ptr&lt;int&gt;(new int));
+
+  std::cout &lt;&lt; &#34;u1: &#34; &lt;&lt; (u1?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;u2: &#34; &lt;&lt; (u2?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;u3: &#34; &lt;&lt; (u3?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;u4: &#34; &lt;&lt; (u4?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;u5: &#34; &lt;&lt; (u5?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;u6: &#34; &lt;&lt; (u6?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;u7: &#34; &lt;&lt; (u7?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;u8: &#34; &lt;&lt; (u8?&#34;not null&#34;:&#34;null&#34;) &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><p>首先第一个例子，我们发现它的输出是</p>
+<pre tabindex="0"><code>u1: null
+u2: null
+u3: not null
+u4: not null
+u5: null
+u6: null
+u7: not null
+u8: not null
+</code></pre><h3 id="stddefault_delete">
+  std::default_delete
+  <a class="anchor" href="#stddefault_delete">#</a>
+</h3>
+<p>std::default_delete is the default destruction policy used by std::unique_ptr when no deleter is specified.</p>
+<ul>
+<li>
+<p>The non-specialized default_delete uses delete to deallocate memory for a single object.</p>
+</li>
+<li>
+<p>A partial specialization for array types that uses delete[] is also provided.</p>
+</li>
+</ul>
+<p>原型是<code>template&lt; class T &gt; struct default_delete</code>和<code>template&lt; class T &gt; struct default_delete&lt;T[]&gt;</code></p>
+<p>所以我们得知，要么用默认的default delete，要么不写空着，不写空着也是给你默认是default delete，要么自己定制deleter。</p>
+<h2 id="析构函数">
+  析构函数
+  <a class="anchor" href="#%e6%9e%90%e6%9e%84%e5%87%bd%e6%95%b0">#</a>
+</h2>
+<pre tabindex="0"><code>// unique_ptr destructor example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  auto deleter = [](int*p){
+    delete p;
+    std::cout &lt;&lt; &#34;[deleter called]\n&#34;;
+  };
+
+  std::unique_ptr&lt;int,decltype(deleter)&gt; foo (new int,deleter);
+
+  std::cout &lt;&lt; &#34;foo &#34; &lt;&lt; (foo?&#34;is not&#34;:&#34;is&#34;) &lt;&lt; &#34; empty\n&#34;;
+
+  return 0;                        // [deleter called]
+}
+</code></pre><p>此程序自定义了一个deleter给一个智能指针，<code>&lt;&gt;</code>的第一个参数是<code>int</code>，也就是<code>int*</code> 指针，第二个是一个<code>decltype(deleter)</code>，<code>decltype</code>的用法基本等同于<code>auto</code>，都是编译时确定这个东西的类型，区别是<code>auto</code>要用这个变量,<code>decltype</code>推完了就拉倒</p>
+<p>这个deleter是一个lambda class，参见<a href="https://docs.microsoft.com/en-us/cpp/standard-library/unique-ptr-class?view=msvc-160">此链接</a> 这里面有contructor的详细声明。</p>
+<h2 id="operator">
+  operator=
+  <a class="anchor" href="#operator">#</a>
+</h2>
+<pre tabindex="0"><code>// unique_ptr::operator= example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::unique_ptr&lt;int&gt; foo;
+  std::unique_ptr&lt;int&gt; bar;
+
+  foo = std::unique_ptr&lt;int&gt;(new int (101));  // rvalue
+
+  bar = std::move(foo);                       // using std::move
+
+  std::cout &lt;&lt; &#34;foo: &#34;;
+  if (foo) std::cout &lt;&lt; *foo &lt;&lt; &#39;\n&#39;; else std::cout &lt;&lt; &#34;empty\n&#34;;
+
+  std::cout &lt;&lt; &#34;bar: &#34;;
+  if (bar) std::cout &lt;&lt; *bar &lt;&lt; &#39;\n&#39;; else std::cout &lt;&lt; &#34;empty\n&#34;;
+
+  return 0;
+}
+</code></pre><p>虽然unique ptr的拷贝构造函数和operator=都被设计成了delete，但是它有move构造，所以传参数，赋值，返回都没问题</p>
+<pre tabindex="0"><code>auto w = std::make_unique&lt;Widget&gt;();
+auto w2 = w; // 编译错误
+</code></pre><p>上面的就是错的，只能move，估计因为左边的不是null，此代码第一个输出empty，第二个输出101。</p>
+<h2 id="get">
+  get
+  <a class="anchor" href="#get">#</a>
+</h2>
+<p>get获取那个裸指针，release是放空一个smart pointer里的raw pointer让其变成null</p>
+<pre tabindex="0"><code>// unique_ptr::get vs unique_ptr::release
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+                                           // foo   bar    p
+                                           // ---   ---   ---
+  std::unique_ptr&lt;int&gt; foo;                // null
+  std::unique_ptr&lt;int&gt; bar;                // null  null
+  int* p = nullptr;                        // null  null  null
+
+  foo = std::unique_ptr&lt;int&gt;(new int(10)); // (10)  null  null
+  bar = std::move(foo);                    // null  (10)  null
+  p = bar.get();                           // null  (10)  (10)
+  *p = 20;                                 // null  (20)  (20)
+  p = nullptr;                             // null  (20)  null
+
+  foo = std::unique_ptr&lt;int&gt;(new int(30)); // (30)  (20)  null
+  p = foo.release();                       // null  (20)  (30)
+  *p = 40;                                 // null  (20)  (40)
+
+  std::cout &lt;&lt; &#34;foo: &#34;;
+  if (foo) std::cout &lt;&lt; *foo &lt;&lt; &#39;\n&#39;; else std::cout &lt;&lt; &#34;(null)\n&#34;;
+
+  std::cout &lt;&lt; &#34;bar: &#34;;
+  if (bar) std::cout &lt;&lt; *bar &lt;&lt; &#39;\n&#39;; else std::cout &lt;&lt; &#34;(null)\n&#34;;
+
+  std::cout &lt;&lt; &#34;p: &#34;;
+  if (p) std::cout &lt;&lt; *p &lt;&lt; &#39;\n&#39;; else std::cout &lt;&lt; &#34;(null)\n&#34;;
+  std::cout &lt;&lt; &#39;\n&#39;;
+
+  delete p;   // the program is now responsible of deleting the object pointed to by p
+              // bar deletes its managed object automatically
+
+  return 0;
+}
+</code></pre><h2 id="get_deleter">
+  get_deleter
+  <a class="anchor" href="#get_deleter">#</a>
+</h2>
+<pre tabindex="0"><code>// unique_ptr deleter with state
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+class state_deleter {  // a deleter class with state
+  int count_;
+public:
+  state_deleter() : count_(0) {}
+  template &lt;class T&gt;
+  void operator()(T* p) {
+    std::cout &lt;&lt; &#34;[deleted #&#34; &lt;&lt; ++count_ &lt;&lt; &#34;]\n&#34;;
+    delete p;
+  }
+};
+
+int main () { 
+  state_deleter del;
+  std::unique_ptr&lt;int&gt; p;   // uses default deleter
+
+  // alpha and beta use independent copies of the deleter:
+  std::unique_ptr&lt;int,state_deleter&gt; alpha (new int);
+  std::unique_ptr&lt;int,state_deleter&gt; beta (new int,alpha.get_deleter());
+
+  // gamma and delta share the deleter &#34;del&#34; (deleter type is a reference!):
+  std::unique_ptr&lt;int,state_deleter&amp;&gt; gamma (new int,del);
+  std::unique_ptr&lt;int,state_deleter&amp;&gt; delta (new int,gamma.get_deleter());
+
+  std::cout &lt;&lt; &#34;resetting alpha...&#34;; alpha.reset(new int);
+  std::cout &lt;&lt; &#34;resetting beta...&#34;; beta.reset(new int);
+  std::cout &lt;&lt; &#34;resetting gamma...&#34;; gamma.reset(new int);
+  std::cout &lt;&lt; &#34;resetting delta...&#34;; delta.reset(new int);
+
+  std::cout &lt;&lt; &#34;calling gamma/delta deleter...&#34;;
+  gamma.get_deleter()(new int);
+
+  alpha.get_deleter() = state_deleter();  // a brand new deleter for alpha
+
+  // additional deletions when unique_ptr objects reach out of scope
+  // (in inverse order of declaration)
+
+  return 0;
+}
+</code></pre><p>这一段代码解释了如何自定义构造一个deleter class，这个deleter class有一个<code>template void operator()(T* p)</code>的运算符重载，它的用法在底下可以看见<code>某指针.get_deleter()(new int)</code>的格式，我们看出<code>new int</code>对应的是模版里的<code>T* p</code>，这个删除器重载<code>()</code>的意思就是删除一个<code>T* p</code>。</p>
+<p>然后这个复杂的例子解释的是我们可以传递一个deleter进入这个指针，也可以不传递一个deleter进入这个指针，假设你在<code>&lt;&gt;</code>声明了这个deleter，那么假设不传递参数，那就是此deleter的默认（一个新值，而不是引用），假设不在<code>&lt;&gt;</code>声明deleter，然后就只能传<code>std::default_deleter</code>，假设声明且传参，那就是完全的自定义。</p>
+<p>还有一点值得注意的是，可以在<code>&lt;&gt;</code>声明引用，那么<code>（）</code>里的就会当成ref。</p>
+<h2 id="operator-bool重载">
+  operator bool重载
+  <a class="anchor" href="#operator-bool%e9%87%8d%e8%bd%bd">#</a>
+</h2>
+<p>将一个智能指针当成bool</p>
+<pre tabindex="0"><code>// example of unique_ptr::operator bool
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+
+int main () {
+  std::unique_ptr&lt;int&gt; foo;
+  std::unique_ptr&lt;int&gt; bar (new int(12));
+
+  if (foo) std::cout &lt;&lt; &#34;foo points to &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+  else std::cout &lt;&lt; &#34;foo is empty\n&#34;;
+
+  if (bar) std::cout &lt;&lt; &#34;bar points to &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+  else std::cout &lt;&lt; &#34;bar is empty\n&#34;;
+
+  return 0;
+}
+</code></pre><h2 id="release">
+  release
+  <a class="anchor" href="#release">#</a>
+</h2>
+<pre tabindex="0"><code>// unique_ptr::release example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::unique_ptr&lt;int&gt; auto_pointer (new int);
+  int * manual_pointer;
+
+  *auto_pointer=10;
+
+  manual_pointer = auto_pointer.release();
+  // (auto_pointer is now empty)
+
+  std::cout &lt;&lt; &#34;manual_pointer points to &#34; &lt;&lt; *manual_pointer &lt;&lt; &#39;\n&#39;;
+
+  delete manual_pointer;
+
+  return 0;
+}
+</code></pre><p>这个例子输出的是10，我们可以看出，release的目的是 Releases ownership of its stored pointer, by returning its value and replacing it with a null pointer. This call does not destroy the managed object，也就是将裸指针设为null，但是它的返回值是裸指针设为null之前的值</p>
+<h2 id="reset">
+  reset
+  <a class="anchor" href="#reset">#</a>
+</h2>
+<pre tabindex="0"><code>// unique_ptr::reset example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::unique_ptr&lt;int&gt; up;  // empty
+
+  up.reset (new int);       // takes ownership of pointer
+  *up=5;
+  std::cout &lt;&lt; *up &lt;&lt; &#39;\n&#39;;
+
+  up.reset (new int);       // deletes managed object, acquires new pointer
+  *up=10;
+  std::cout &lt;&lt; *up &lt;&lt; &#39;\n&#39;;
+
+  up.reset();               // deletes managed object
+
+  return 0;
+}
+</code></pre><p>我们可以发现，<code>reset()</code>接受一个裸指针，并销毁原先的指针，把封装指针变成参数里的那个。</p>
+<h2 id="swap">
+  swap
+  <a class="anchor" href="#swap">#</a>
+</h2>
+<pre tabindex="0"><code>// unique_ptr swap specialization
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::unique_ptr&lt;int&gt; foo (new int(10));
+  std::unique_ptr&lt;int&gt; bar (new int(20));
+
+  swap(foo,bar);
+
+  std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><p>这是非成员函数的swap，下面的是成员函数的swap</p>
+<pre tabindex="0"><code>// unique_ptr::swap example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::unique_ptr&lt;int&gt; foo (new int(10));
+  std::unique_ptr&lt;int&gt; bar (new int(20));
+
+  foo.swap(bar);
+
+  std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><p>swap的目的是交换指针的所有权，foo.swap(bar)</p>
+<h2 id="operator-operator-">
+  operator* operator-&gt;
+  <a class="anchor" href="#operator-operator-">#</a>
+</h2>
+<pre tabindex="0"><code>// unique_ptr::operator*
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::unique_ptr&lt;int&gt; foo (new int);
+  std::unique_ptr&lt;int&gt; bar (new int (100));
+
+  *foo = *bar * 2;
+
+  std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><p>运算符重载 * ，返回A reference to the object pointed.</p>
+<pre tabindex="0"><code>// unique_ptr::operator-&gt;
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+struct C { int a; int b; };
+
+int main () {
+  std::unique_ptr&lt;C&gt; foo (new C);
+  std::unique_ptr&lt;C&gt; bar;
+
+  foo-&gt;a = 10;
+  foo-&gt;b = 20;
+
+  bar = std::move(foo);
+
+  if (foo) std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; foo-&gt;a &lt;&lt; &#39; &#39; &lt;&lt; foo-&gt;b &lt;&lt; &#39;\n&#39;;
+  if (bar) std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; bar-&gt;a &lt;&lt; &#39; &#39; &lt;&lt; bar-&gt;b &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><p>运算符重载 -&gt; , 返回A pointer to the object managed by the unique_ptr.</p>
+<h2 id="operator-1">
+  operator[]
+  <a class="anchor" href="#operator-1">#</a>
+</h2>
+<pre tabindex="0"><code>// unique_ptr::operator[]
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::unique_ptr&lt;int[]&gt; foo (new int[5]);
+
+  for (int i=0; i&lt;5; ++i) foo[i] = i;
+
+  for (int i=0; i&lt;5; ++i) std::cout &lt;&lt; foo[i] &lt;&lt; &#39; &#39;;
+  std::cout &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="智能指针#unique_ptr#允许指针有一个所有权，用unique ptr作为首选，除非你知道你确定要用shared ptr。unique ptr的所有权可以被移给一个新的owner，但是不能copied or shared。shared ptr旨在替换废弃的auto ptr，unique ptr比boost库的scoped ptr要好，它的尺寸仅占一个指针的位置且支持右值引用（为了插入删除获取快一些）
+shared_ptr#引用计数的指针，Use when you want to assign one raw pointer to multiple owners，用这个。
+比如当返回一个指针的copy的时候（并保留原来的），这个时候，就要用shared ptr，此指针不会被删除，直到它的shared_ptr离开作用域之外。
+它的尺寸是两个指针大小，第一块是为了储存那个对象，第二块是shared control block，包含引用计数。
+weak_ptr#和shared ptr搭配的指针，一个weak ptr给一个被多个shared ptr指针指向的对象提供访问的通道，但是并不参与reference counting。
+Special-case smart pointer for use in conjunction with shared_ptr. A weak_ptr provides access to an object that is owned by one or more shared_ptr instances, but does not participate in reference counting.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="智能指针" />
+<meta property="og:description" content="智能指针#unique_ptr#允许指针有一个所有权，用unique ptr作为首选，除非你知道你确定要用shared ptr。unique ptr的所有权可以被移给一个新的owner，但是不能copied or shared。shared ptr旨在替换废弃的auto ptr，unique ptr比boost库的scoped ptr要好，它的尺寸仅占一个指针的位置且支持右值引用（为了插入删除获取快一些）
+shared_ptr#引用计数的指针，Use when you want to assign one raw pointer to multiple owners，用这个。
+比如当返回一个指针的copy的时候（并保留原来的），这个时候，就要用shared ptr，此指针不会被删除，直到它的shared_ptr离开作用域之外。
+它的尺寸是两个指针大小，第一块是为了储存那个对象，第二块是shared control block，包含引用计数。
+weak_ptr#和shared ptr搭配的指针，一个weak ptr给一个被多个shared ptr指针指向的对象提供访问的通道，但是并不参与reference counting。
+Special-case smart pointer for use in conjunction with shared_ptr. A weak_ptr provides access to an object that is owned by one or more shared_ptr instances, but does not participate in reference counting." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://pipvkings.github.io/docs/example/table-of-contents/smart_pointer/" /><meta property="article:section" content="docs" />
+
+
+<title>智能指针 | 首頁介紹</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.a1bc3f1d714233dbb3581a7510c0be58c1aadad42dcdfaaecec1aaa38023c9e2.css" integrity="sha256-obw/HXFCM9uzWBp1EMC&#43;WMGq2tQtzfquzsGqo4AjyeI=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.f0c6fac7200a71399e3465a133f38930434c055e2ca71404d6ad0a7d22d66c03.js" integrity="sha256-8Mb6xyAKcTmeNGWhM/OJMENMBV4spxQE1q0KfSLWbAM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>首頁介紹</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Contents Post</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/" class="">After School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/meaning-of-work/" class="">上班的意義</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/2023scc/" class="">个人数据的标准合同条款</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/" class="">At School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading/" class="">A Review at Operator Overloading</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cppio/" class="">C&#43;&#43; IO的简单复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cpp_thread/" class="">C&#43;&#43;的线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/lseek/" class="">lseek和空洞文件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/shared_p/" class="">shared_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/uniq_p/" class="">unique_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading-zh/" class="">对操作符重载的学习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/os-review/" class="">操作系统中的进程和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/smart_pointer/" class="active">智能指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/type-casting-zh/" class="">浅谈C&#43;&#43;中的类型转换</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/sliding_windows_prot/" class="">滑动窗口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/rawp/" class="">裸指针和其修饰字</a>
+  
+
+        </li>
+      
+    
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>智能指针</strong>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="智能指针">
+  智能指针
+  <a class="anchor" href="#%e6%99%ba%e8%83%bd%e6%8c%87%e9%92%88">#</a>
+</h1>
+<h3 id="unique_ptr">
+  unique_ptr
+  <a class="anchor" href="#unique_ptr">#</a>
+</h3>
+<p>允许指针有一个所有权，用unique ptr作为首选，除非你知道你确定要用shared ptr。unique ptr的所有权可以被移给一个新的owner，但是不能copied or shared。shared ptr旨在替换废弃的auto ptr，unique ptr比boost库的scoped ptr要好，它的尺寸仅占一个指针的位置且支持右值引用（为了插入删除获取快一些）</p>
+<h3 id="shared_ptr">
+  shared_ptr
+  <a class="anchor" href="#shared_ptr">#</a>
+</h3>
+<p>引用计数的指针，Use when you want to assign one raw pointer to multiple owners，用这个。</p>
+<p>比如当返回一个指针的copy的时候（并保留原来的），这个时候，就要用shared ptr，此指针不会被删除，直到它的shared_ptr离开作用域之外。</p>
+<p>它的尺寸是两个指针大小，第一块是为了储存那个对象，第二块是shared control block，包含引用计数。</p>
+<h3 id="weak_ptr">
+  weak_ptr
+  <a class="anchor" href="#weak_ptr">#</a>
+</h3>
+<p>和shared ptr搭配的指针，一个weak ptr给一个被多个shared ptr指针指向的对象提供访问的通道，但是并不参与reference counting。</p>
+<p>Special-case smart pointer for use in conjunction with <code>shared_ptr</code>. A <code>weak_ptr</code> provides access to an object that is owned by one or more <code>shared_ptr</code> instances, but does not participate in reference counting. Use when you want to observe an object, but do not require it to remain alive. Required in some cases to break circular references between <code>shared_ptr</code> instances. Header file: <code>&lt;memory&gt;</code>. For more information, see How to: <a href="https://docs.microsoft.com/en-us/cpp/cpp/how-to-create-and-use-weak-ptr-instances?view=msvc-160">Create and Use weak_ptr Instances</a> and <a href="https://docs.microsoft.com/en-us/cpp/standard-library/weak-ptr-class?view=msvc-160">weak_ptr</a> Class.</p>
+<h1 id="msdn对smart-pointer的介绍">
+  msdn对smart pointer的介绍
+  <a class="anchor" href="#msdn%e5%af%b9smart-pointer%e7%9a%84%e4%bb%8b%e7%bb%8d">#</a>
+</h1>
+<p>在现代C++编程中，标准库，包含了smart pointer，使得开发者确保程序没有内存（资源）泄漏和exception-safe。</p>
+<p>智能指针，定义在std命名空间的memory头文件里的，它们是raii的关键（资源获取即初始化）。raii的主要目的是对象的初始化和资源的获取在同一时刻进行，所以所有对象的资源的创建是一行代码就解决的。</p>
+<p>raii的原则是给所有堆初始化的资源以所有权，比如：动态分配的内存或者系统对象的句柄和在stack上分配的对象，其析构函数包含有delete函数和free函数的代码。</p>
+<blockquote>
+<p>大多数情况下，当你初始化一个raw pointer或者资源句柄去指向一个真的资源时，请立刻停止并改使智能指针。在现代C++中，裸指针仅仅被用于小型代码区、块、极端的性能优化（没有办法用智能指针的时候）</p>
+</blockquote>
+<pre tabindex="0"><code>void UseRawPointer()
+{
+    // Using a raw pointer -- not recommended.
+    Song* pSong = new Song(L&#34;Nothing on You&#34;, L&#34;Bruno Mars&#34;); 
+
+    // Use pSong...
+
+    // Don&#39;t forget to delete!
+    delete pSong;   
+}
+
+
+void UseSmartPointer()
+{
+    // Declare a smart pointer on stack and pass it the raw pointer.
+    unique_ptr&lt;Song&gt; song2(new Song(L&#34;Nothing on You&#34;, L&#34;Bruno Mars&#34;));
+
+    // Use song2...
+    wstring s = song2-&gt;duration_;
+    //...
+
+} // song2 is deleted automatically here.
+</code></pre><p>如上述例子，smart pointer是stack上的class template，用raw pointer初始化，这个raw pointer指向堆内存的对象。</p>
+<p>智能指针初始化后，它就有了这个raw pointer的所有权。这表示，smart pointer负责析构raw pointer指向的那个内存。智能指针的析构函数包含了delete的调用，因为智能指针在stack上被声明，它的析构函数在其脱离其作用域时会被自动调用，even if an exception is thrown somewhere further up the stack.</p>
+<p>访问这种封装好的指针要用-&gt;操作符，which，智能指针类重载了-&gt;然后返回了被封装的raw pointer。</p>
+<p>C++智能指针类似于C#中对象的创建习惯，创建一个对象然后让系统take care of its deleting at the correct time，区别是，C++无在后台跑的GC，内存是由作用域管理的，更快。</p>
+<p>记住永远不要用parameter list来初始化智能指针，智能指针永远“单独创建一行”（不理解parameter list是那个list）</p>
+<p>Always create smart pointers on a separate line of code, never in a parameter list, so that a subtle resource leak won&rsquo;t occur due to certain parameter list allocation rules.</p>
+<pre tabindex="0"><code>class LargeObject
+{
+public:
+    void DoSomething(){}
+};
+
+void ProcessLargeObject(const LargeObject&amp; lo){}
+void SmartPointerDemo()
+{    
+    // Create the object and pass it to a smart pointer
+    std::unique_ptr&lt;LargeObject&gt; pLarge(new LargeObject());
+
+    //Call a method on the object
+    pLarge-&gt;DoSomething();
+
+    // Pass a reference to a method.
+    ProcessLargeObject(*pLarge);
+
+} //pLarge is deleted automatically when function block goes out of scope.
+</code></pre><p>（综上我们可以看出，它传参传的是智能指针的const引用）</p>
+<p>此例解释了如何使用智能指针</p>
+<ul>
+<li>声明此指针为局部变量而不是用new或者malloc</li>
+<li>在&lt;&gt;里规定封装指针指向的类型</li>
+<li>在构造函数里放入裸指针的新对象</li>
+<li>用重载操作符*或者-&gt;
+智能指针基本和裸指针差不多大，四个字节或者八个，性能也是。</li>
+</ul>
+<p>智能指针自己的的成员函数要用&quot;dot&quot;来访问</p>
+<p>在变量离开作用域之前，有些智能指针可以用reset释放所有权来free memory，如下：</p>
+<pre tabindex="0"><code>void SmartPointerDemo2()
+{
+    // Create the object and pass it to a smart pointer
+    std::unique_ptr&lt;LargeObject&gt; pLarge(new LargeObject());
+
+    //Call a method on the object
+    pLarge-&gt;DoSomething();
+
+    // Free the memory before we exit function block.
+    pLarge.reset();
+
+    // Do some other work...
+
+}
+</code></pre><p>Smart pointers usually provide a way to access their raw pointer directly. C++ Standard Library smart pointers have a get member function for this purpose, and CComPtr has a public p class member. By providing direct access to the underlying pointer, you can use the smart pointer to manage memory in your own code and still pass the raw pointer to code that does not support smart pointers.（大概是有一个get()方法可以拿到裸指针，然后CComPtr估计是MS黑魔法）</p>
+<pre tabindex="0"><code>void SmartPointerDemo4()
+{
+    // Create the object and pass it to a smart pointer
+    std::unique_ptr&lt;LargeObject&gt; pLarge(new LargeObject());
+
+    //Call a method on the object
+    pLarge-&gt;DoSomething();
+
+    // Pass raw pointer to a legacy API
+    LegacyLargeObjectFunction(pLarge.get());    
+}
+</code></pre><h2 id="how-to-create-and-use-unique_ptr-instances">
+  How to: Create and use unique_ptr instances
+  <a class="anchor" href="#how-to-create-and-use-unique_ptr-instances">#</a>
+</h2>
+<p>这个例子展示了什么叫做用move来转移所有权，而不是将指针assign给另一个指针。</p>
+<pre tabindex="0"><code>unique_ptr&lt;Song&gt; SongFactory(const std::wstring&amp; artist, const std::wstring&amp; title)
+{
+    // Implicit move operation into the variable that stores the result.
+    return make_unique&lt;Song&gt;(artist, title);
+}
+
+void MakeSongs()
+{
+    // Create a new unique_ptr with a new object.
+    auto song = make_unique&lt;Song&gt;(L&#34;Mr. Children&#34;, L&#34;Namonaki Uta&#34;);
+
+    // Use the unique_ptr.
+    vector&lt;wstring&gt; titles = { song-&gt;title };
+
+    // Move raw pointer from one unique_ptr to another.
+    unique_ptr&lt;Song&gt; song2 = std::move(song);
+
+    // Obtain unique_ptr from function that returns by value.
+    auto song3 = SongFactory(L&#34;Michael Jackson&#34;, L&#34;Beat It&#34;);
+}
+</code></pre><pre tabindex="0"><code>void SongVector()
+{
+    vector&lt;unique_ptr&lt;Song&gt;&gt; songs;
+    
+    // Create a few new unique_ptr&lt;Song&gt; instances
+    // and add them to vector using implicit move semantics.
+    songs.push_back(make_unique&lt;Song&gt;(L&#34;B&#39;z&#34;, L&#34;Juice&#34;)); 
+    songs.push_back(make_unique&lt;Song&gt;(L&#34;Namie Amuro&#34;, L&#34;Funky Town&#34;)); 
+    songs.push_back(make_unique&lt;Song&gt;(L&#34;Kome Kome Club&#34;, L&#34;Kimi ga Iru Dake de&#34;)); 
+    songs.push_back(make_unique&lt;Song&gt;(L&#34;Ayumi Hamasaki&#34;, L&#34;Poker Face&#34;));
+
+    // Pass by const reference when possible to avoid copying.
+    for (const auto&amp; song : songs)
+    {
+        wcout &lt;&lt; L&#34;Artist: &#34; &lt;&lt; song-&gt;artist &lt;&lt; L&#34;   Title: &#34; &lt;&lt; song-&gt;title &lt;&lt; endl; 
+    }    
+}
+</code></pre><blockquote>
+<p>注意在循环里如果不用&amp;会报错，因为unique_ptr的copy contructor是默认没有的</p>
+</blockquote>
+<pre tabindex="0"><code>// Create a unique_ptr to an array of 5 integers.
+auto p = make_unique&lt;int[]&gt;(5);
+
+// Initialize the array.
+for (int i = 0; i &lt; 5; ++i)
+{
+    p[i] = i;
+    wcout &lt;&lt; p[i] &lt;&lt; endl;
+}
+</code></pre><p>上述例子给<code>int*</code>（<code>int[]</code>）做了一个智能指针，五个单位长度的数组，我们可以看出，初始化一个智能指针<code>&lt;&gt;</code>里可以放一个类，然后用<code>new</code>关键字在后面（代表一个这个类一个智能指针），还有另外一种就是<code>&lt;&gt;</code>里放一个数组，然后<code>()</code>里放你要几个长度的数组，访问这个指针可以用<code>array[i]</code>这样访问，也就是说智能指针给数组单独做了一套机制。</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

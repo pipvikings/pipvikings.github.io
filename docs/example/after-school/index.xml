@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>After School on 首頁介紹</title>
+    <link>https://pipvkings.github.io/docs/example/after-school/</link>
+    <description>Recent content in After School on 首頁介紹</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://pipvkings.github.io/docs/example/after-school/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>上班的意義</title>
+      <link>https://pipvkings.github.io/docs/example/after-school/meaning-of-work/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/after-school/meaning-of-work/</guid>
+      <description>上班的意義就在於上他****#</description>
+    </item>
+    
+    <item>
+      <title>个人数据的标准合同条款</title>
+      <link>https://pipvkings.github.io/docs/example/after-school/2023scc/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pipvkings.github.io/docs/example/after-school/2023scc/</guid>
+      <description>以下为20年新版gdpr协议下scc的控制者到处理者的中文翻译，不包含2个annex
+Standard Contractual Clauses for the transfer of personal data (controller / processor)#个人数据传输的标准合同条款（从控制者到处理者）#SECTION I 第一部分#Clause 1#Purpose and scope 目的和范围#(a)	The purpose of these standard contractual clauses is to ensure compliance with the requirements of Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation) for the transfer of personal data to a third country.</description>
+    </item>
+    
+  </channel>
+</rss>

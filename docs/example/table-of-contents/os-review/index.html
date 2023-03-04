@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Process#进程是执行中的程序，包括文本段（代码段），程序计数器，处理器寄存器内容，stack段（临时数据，函数参数，返回地址，局部变量），数据段（全局变量），heap段（动态内存）。 内存中的进程如如图所示： 进程在操作系统中以PCB表示，如图，有：
+进程状态：如图 Program Counter：下一个进程地址 CPU Register：累加器，索引寄存器，堆栈指针，通用寄存器，条件码寄存器（出现中断后要保存好） 调度信息：进程优先级，调度队列指针。 Memory Management：This information may include such information as the value of the base and limit registers, the page tables, or the segment tables, depending on the memory system used by the operating system Accounting: This information includes the amount of CPU and real time used, time limits, account numbers, job or process numbers, and so on. I/O: This information includes the list of I/O devices allocated to the process, a list of open files, and so on.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="操作系统中的进程和锁" />
+<meta property="og:description" content="Process#进程是执行中的程序，包括文本段（代码段），程序计数器，处理器寄存器内容，stack段（临时数据，函数参数，返回地址，局部变量），数据段（全局变量），heap段（动态内存）。 内存中的进程如如图所示： 进程在操作系统中以PCB表示，如图，有：
+进程状态：如图 Program Counter：下一个进程地址 CPU Register：累加器，索引寄存器，堆栈指针，通用寄存器，条件码寄存器（出现中断后要保存好） 调度信息：进程优先级，调度队列指针。 Memory Management：This information may include such information as the value of the base and limit registers, the page tables, or the segment tables, depending on the memory system used by the operating system Accounting: This information includes the amount of CPU and real time used, time limits, account numbers, job or process numbers, and so on. I/O: This information includes the list of I/O devices allocated to the process, a list of open files, and so on." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://pipvkings.github.io/docs/example/table-of-contents/os-review/" /><meta property="article:section" content="docs" />
+
+
+<title>操作系统中的进程和锁 | 首頁介紹</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.a1bc3f1d714233dbb3581a7510c0be58c1aadad42dcdfaaecec1aaa38023c9e2.css" integrity="sha256-obw/HXFCM9uzWBp1EMC&#43;WMGq2tQtzfquzsGqo4AjyeI=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.f0c6fac7200a71399e3465a133f38930434c055e2ca71404d6ad0a7d22d66c03.js" integrity="sha256-8Mb6xyAKcTmeNGWhM/OJMENMBV4spxQE1q0KfSLWbAM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>首頁介紹</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Contents Post</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/" class="">After School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/meaning-of-work/" class="">上班的意義</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/2023scc/" class="">个人数据的标准合同条款</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/" class="">At School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading/" class="">A Review at Operator Overloading</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cppio/" class="">C&#43;&#43; IO的简单复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cpp_thread/" class="">C&#43;&#43;的线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/lseek/" class="">lseek和空洞文件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/shared_p/" class="">shared_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/uniq_p/" class="">unique_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading-zh/" class="">对操作符重载的学习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/os-review/" class="active">操作系统中的进程和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/smart_pointer/" class="">智能指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/type-casting-zh/" class="">浅谈C&#43;&#43;中的类型转换</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/sliding_windows_prot/" class="">滑动窗口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/rawp/" class="">裸指针和其修饰字</a>
+  
+
+        </li>
+      
+    
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>操作系统中的进程和锁</strong>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="process">
+  Process
+  <a class="anchor" href="#process">#</a>
+</h2>
+<p>进程是执行中的程序，包括文本段（代码段），程序计数器，处理器寄存器内容，stack段（临时数据，函数参数，返回地址，局部变量），数据段（全局变量），heap段（动态内存）。
+内存中的进程如<a href="https://github.com/pipvikings/blog/blob/main/stack_heap.png">如图</a>所示：
+进程在操作系统中以PCB表示，<a href="https://github.com/pipvikings/blog/blob/main/pcb.png">如图</a>，有：</p>
+<ul>
+<li>进程状态：<a href="https://github.com/pipvikings/blog/blob/main/os_status.png">如图</a></li>
+<li>Program Counter：下一个进程地址</li>
+<li>CPU Register：累加器，索引寄存器，堆栈指针，通用寄存器，条件码寄存器（出现中断后要保存好）</li>
+<li>调度信息：进程优先级，调度队列指针。</li>
+<li>Memory Management：This information may include such information as the value of the base and limit registers, the page tables, or the segment tables, depending on the memory system used by the operating system</li>
+<li>Accounting: This information includes the amount of CPU and real time used, time limits, account numbers, job or process numbers, and so on.</li>
+<li>I/O: This information includes the list of I/O devices allocated to the process, a list of open files, and so on.</li>
+</ul>
+<p>进程的切换<a href="https://github.com/pipvikings/blog/blob/main/context_switch.png">如图</a>所示。</p>
+<h2 id="fork和exec">
+  <code>fork</code>和<code>exec</code>
+  <a class="anchor" href="#fork%e5%92%8cexec">#</a>
+</h2>
+<p><a href="https://github.com/pipvikings/blog/blob/main/fork.png">如图</a></p>
+<h2 id="生产者消费者">
+  生产者消费者
+  <a class="anchor" href="#%e7%94%9f%e4%ba%a7%e8%80%85%e6%b6%88%e8%b4%b9%e8%80%85">#</a>
+</h2>
+<p>操作系统概念一书在开始介绍了producer和consumer模式，其代码如下：</p>
+<pre tabindex="0"><code>// 生产者
+while (true) {
+/* produce an item in nextProduced */ 
+  while (counter == BUFFER SIZE); 
+  /* do nothing */ 
+  buffer[in] = nextProduced;
+  in = (in + 1) % BUFFER SIZE; 
+  counter++;
+}
+</code></pre><p>其定义了一个数组<code>buffer</code>，生产者会在<code>in</code>处更改一个项，然后将<code>in</code>向右移动<code>1</code>（即：移动到后面邻接的一个空元素），然后计数<code>count</code>增加一，当<code>count</code>是buffer size的时候，意味着不能再添加了，陷入一个死循环。直到消费者执行剔除操作。</p>
+<pre tabindex="0"><code>//消费者
+while (true) {
+  while (counter == 0); /* do nothing */
+  nextConsumed = buffer[out];
+  out = (out + 1) % BUFFER SIZE; 
+  counter--;
+/* consume the item in nextConsumed */
+}
+</code></pre><p>此两段代码的意义在于诠释两个进程对于一个区域的读和写，假设无<code>lock</code>的限制，会报错，比如增加五次数据然后删除五次数据结果发现<code>count</code>不是0的情况。
+因为<code>count++</code>和<code>count--</code>的操作是分成三段进行的，即：<code>register1 = counter</code> ， <code>register1 = register1 + 1</code> , <code>counter = register1</code>和<code>register2 = counter</code>, <code>register2 = register2 − 1</code> , <code>counter = register2</code>。微观上进程间的调度会让这六句代码交替执行，导致<code>count</code>不是0。</p>
+<h2 id="临界区的概念">
+  临界区的概念
+  <a class="anchor" href="#%e4%b8%b4%e7%95%8c%e5%8c%ba%e7%9a%84%e6%a6%82%e5%bf%b5">#</a>
+</h2>
+<pre tabindex="0"><code>do {
+  extry section
+  critical section
+  exit section
+  remainder section
+} while(1)
+</code></pre><p>上述伪代码代表了一个通用的进程 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.css"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        
+        
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ],
+        
+        throwOnError : false
+      });
+  });
+</script>
+
+
+<span>
+  \(P_i\)
+</span>
+ 一般来讲会经历的多线程竞争情况</p>
+<p>操作系统概念上写到：</p>
+<p>Consider a system consisting of 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.css"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        
+        
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ],
+        
+        throwOnError : false
+      });
+  });
+</script>
+
+
+<span>
+  \(n\)
+</span>
+ processes 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.css"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        
+        
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ],
+        
+        throwOnError : false
+      });
+  });
+</script>
+
+
+<span>
+  \({P_0, P_1,..., P_{n−1}}\)
+</span>
+. Each process has a segment of code, called a critical section, in which the process may be changing common variables, updating a table, writing a file, and so on. The important feature of the system is that, when one process is executing in its critical section, no other process is to be allowed to execute in its critical section. That is, no two processes are executing in their critical sections at the same time. The critical-section problem is to design a protocol that the processes can use to cooperate. Each process must request permission to enter its critical section. The section of code implementing this request is the entry section. The critical section may be followed by an exit section. The remaining code is the remainder section.</p>
+<p>临界区问题的解决需要满足三个条件：</p>
+<ul>
+<li>第一个条件是：mutual exclution，即不能有两个进程同时访问critical section。</li>
+<li>第二个条件是：If no process is executing in its critical section and some processes wish to enter their critical sections, then only those processes that are not executing in their remainder sections can participate in deciding which will enter its critical section next, and this selection cannot be postponed indefinitely. 这一段就是只有执行完remain section的进程才有资格决定进入critical section，且critical section中此时需要0进程，且此决定不能被postponed indefinitely。</li>
+<li>第三个条件就是：bounded waiting，一个进入critical section的request不能被无限期推迟。</li>
+</ul>
+<h2 id="抢占式内核和非抢占式内核">
+  抢占式内核和非抢占式内核
+  <a class="anchor" href="#%e6%8a%a2%e5%8d%a0%e5%bc%8f%e5%86%85%e6%a0%b8%e5%92%8c%e9%9d%9e%e6%8a%a2%e5%8d%a0%e5%bc%8f%e5%86%85%e6%a0%b8">#</a>
+</h2>
+<p>非抢占内核不允许正在进行的process被打断，反之是抢占式内核。非抢占式内核不存在临界区问题。</p>
+<h2 id="peterson">
+  <code>peterson</code>
+  <a class="anchor" href="#peterson">#</a>
+</h2>
+<pre tabindex="0"><code>do {
+  flag[i] = true;
+  turn = j;
+  while (flag[j] &amp;&amp; turn = j);
+  // critical section
+  flag[i] = false;
+  // remainder section
+} while(1)
+</code></pre><p>假定有两个进程<code>i</code>，<code>j</code>。共同执行这段代码。<code>flag[i]</code>和<code>flag[j]</code>是两个bool值，标志着进程是否想进入临界区。
+首先假设进程<code>j</code>正在critical section中，然后进程<code>i</code>首先执行<code>flag[i] = true</code>，表示<code>i</code>想进入临界区，之后将<code>turn</code>变为<code>j</code>。
+<code>i</code>进程中，假设这个算法是可以的，那么<code>while</code>应该是一个死循环，可以得出<code>flag[j]</code>一定是<code>true</code>。
+回到<code>j</code>进程，当<code>j</code>进程执行完临界区，执行<code>flag[j] = false</code>。
+回到<code>i</code>进程的死循环里，这个循环松动，<code>i</code>进入critical section。
+回到<code>j</code>进程，执行remainder section之后回到<code>do while</code>的开头，<code>flag[j] = true</code>，表明<code>j</code>要进临界区，<code>turn</code>是<code>i</code>，表明<code>i</code>正在用，之后进行死循环。重复往复。
+这么设计的缘由是什么？ 做一下浅显的分析，假设两个进程互斥，那就意味着一定有一个相反的变量<code>turn</code>，<code>turn</code>本身是一个变量但是可以用进程号表示这种互斥的关系。那么如何能让<code>turn</code>交换呢？答案是当前进程改变它的值。</p>
+<p>以下是两个缺失判断条件的例子</p>
+<pre tabindex="0"><code>// 对于i
+do {
+    turn = j;
+    while(turn == j);
+    // 临界
+} while(1)
+</code></pre><pre tabindex="0"><code>// 对于j
+do {
+    turn = i;
+    while(turn == i);
+    // 临界
+} while(1)
+</code></pre><p>假设只有<code>i</code>没有<code>j</code>，<code>turn</code>被<code>i</code>设为<code>j</code>，之后卡死直到<code>j</code>来解锁<code>turn</code>变为<code>i</code>，<code>i</code>进程解锁进入临界区，当<code>i</code>进行完临界区，<code>turn</code>变为<code>j</code>，<code>i</code>进程卡死，<code>j</code>进程进入临界区，往复这样是不行的，因为这样循环的触发条件是不满足的，不论第一个进程是<code>i</code>还是<code>j</code>，第一个进程永远是卡死的，要靠第二个进程来解锁。
+所以这就是<code>flag[i]</code>和<code>flag[j]</code>存在的的必要，表明&quot;我想要进入&quot;，而不是仅仅是&quot;现在到谁了&quot;。这样第一个进入的进程的<code>while</code>不会是一个死循环。</p>
+<p>但是peterson并无引出锁的概念：书上有写，进程在进入临界区之前获得锁，退出临界区之后释放锁，但是这样还不够具体。在swap和testandset算法中，锁被当成了一个具体的实例。</p>
+<h2 id="swap--testandset">
+  <code>swap</code> &amp;&amp; <code>testandset</code>
+  <a class="anchor" href="#swap--testandset">#</a>
+</h2>
+<p><code>swap</code>和<code>testandset</code>是基于硬件实现的临界区算法</p>
+<pre tabindex="0"><code>// test and set
+bool ts(bool* lock) {
+  bool old;
+  old = *lock;
+  *lock = true;
+  return old;
+}
+do {
+  while(ts(&amp;lock)) {
+      // do nothing 
+  }
+  lock = false;
+} while(1)
+</code></pre><p>这样发现lock变成了一个可以原子操作的实体（由硬件实现），<code>swap</code>算法不赘述了，和<code>ts</code>差不多只不过变成了两个指针的<code>swap</code>操作，三种临界区算法的共同缺点就是会在中间的<code>while()</code>这里忙等空转，也就是虽然说满足了mutually exclusion但是不满足bounded waiting，下面是<code>ts</code>算法中解决bounded waiting的办法。</p>
+<pre tabindex="0"><code>do {
+  waiting[i] = true
+  key = true
+  while (waiting[i] &amp;&amp; key) {
+    key = testandset(&amp;lock)
+  }
+  waiting[i] = false
+  // 临界
+  j = (i + 1) % n
+  while ((j != i) &amp;&amp; !waiting[j]) {
+    j = (j + 1) % n
+  }
+  if (i == j) {
+    lock = false
+  } else {
+    waiting[j] = false
+  }
+  // remainder
+} while(1)
+</code></pre><p>有兴趣自行研究，过于复杂不赘述</p>
+<h2 id="semaphore">
+  semaphore
+  <a class="anchor" href="#semaphore">#</a>
+</h2>
+<pre tabindex="0"><code>// wait()
+wait(s) {
+    while(s &lt;= 0) {}
+    s--;
+}
+</code></pre><pre tabindex="0"><code>// signal()
+signal(s) {
+    s++;
+}
+</code></pre><p>基于硬件的临界区算法的伪码并不直观，于是封装成<code>semaphore</code>这种形式以方便理解</p>
+<p>信号量就是那个<code>s</code>，信号量有两种，第一种是binary semaphore，第二种是counting semaphore，前者是01两种数字的<code>s</code>，后者可以是任意数，binary semaphore也叫做mutex lock（互斥锁），counting semaphore可以规定很多的资源，每用一个资源，<code>s--</code></p>
+<h2 id="spin-lock">
+  spin lock
+  <a class="anchor" href="#spin-lock">#</a>
+</h2>
+<p>上述的lock叫做spinlock，因为会在<code>while()</code>循环里死循环，所以叫做自旋锁，它的缺点就是忙等（busy waiting），浪费cpu，多核cpu里面会让另外一个cpu做忙等，另外一个做正常任务。这种也不是全都是缺点，因为这样避免了多余的context switch。</p>
+<p>去解决忙等的问题，要采用以下的方式：</p>
+<p>信号量并没有本质上解决busy waiting的问题，但是可以将那个while的死循环变成block操作，即</p>
+<pre tabindex="0"><code>typedef struct{ 
+  int value;
+  struct process *list; 
+} semaphore;
+</code></pre><p>这是一个结构体，里面的<code>value</code>是可以用的资源数，<code>list</code>是等待队列，存放pcb</p>
+<pre tabindex="0"><code>wait(semaphore *S) { 
+  S-&gt;value--;
+  if (S-&gt;value &lt; 0) {
+      add this process to S-&gt;list;
+      block();
+  }
+}
+</code></pre><pre tabindex="0"><code>signal(semaphore *S) { 
+  S-&gt;value++;
+  if (S-&gt;value &gt;= 0) {
+      remove a process P from S-&gt;list; 
+      wakeup(P);
+  } 
+}
+</code></pre><p>当资源数不共用的时候会进入休眠，然后当资源够用的时候解锁，然后在list里取出pcb，也可能不是立刻马上取出，而是交给操作系统调度（操作系统决定是不是马上要调度到这个pcb），这样本质上还是没有解决忙等的问题，因为只是将忙等从entry section 移动到了critical section ，但是这样，也是快了很多，大部分情况下消除了busy waiting。而且wait和signal也要将内部实现为一个自旋锁，来保证atomic operation。</p>
+<h2 id="dead-lock">
+  dead lock
+  <a class="anchor" href="#dead-lock">#</a>
+</h2>
+<pre tabindex="0"><code>// p1
+wait(q);
+wait(s);
+</code></pre><pre tabindex="0"><code>// p2
+wait(s);
+wait(q);
+</code></pre><p>当<code>p1</code>和<code>p2</code>同时执行的时候（先p1的第一句之后p2的第一句或者相反），<code>p1</code>要<code>wait(s)</code>因为<code>s</code>被<code>p2</code>耗光了，<code>p2</code>要等<code>q</code>因为<code>p1</code>耗光了<code>q</code>。这样就卡住了。</p>
+<h2 id="进程的优先级继承">
+  进程的优先级继承
+  <a class="anchor" href="#%e8%bf%9b%e7%a8%8b%e7%9a%84%e4%bc%98%e5%85%88%e7%ba%a7%e7%bb%a7%e6%89%bf">#</a>
+</h2>
+<p>假定三个进程优先级顺序为：<code>l</code> &lt; <code>m</code> &lt; <code>h</code></p>
+<p>首先<code>l</code>访问内核资源<code>r</code>，<code>h</code>也想访问，因为<code>l</code>在代码前段，所以等<code>l</code>访问完再访问，但是这个时候抢占进程<code>m</code>抢了<code>l</code>，<code>m</code>的时长将决定<code>h</code>什么时候访问的到<code>r</code>，这样显然是不对的，因为<code>h</code>的优先级是最大的。</p>
+<p>解决办法是所有正在访问较高优先级进程所需资源的进程都将继承较高优先级，直到它们用有关资源完成为止。因为<code>h</code>要用<code>l</code>对<code>r</code>的计算结果，所以l暂时的优先级将会变成h，之后再退回去。</p>
+<h2 id="first--second-reader-and-writer-problem">
+  First / Second Reader And Writer Problem
+  <a class="anchor" href="#first--second-reader-and-writer-problem">#</a>
+</h2>
+<p>first reader and writer problem是写操作优先于读操作。</p>
+<p>second reader and writer problem是当writer正在等reader的时候，其他reader就不要再添加到writer前面了。</p>
+<p>假设对于第一种情况，假设读操作没完没了，那么writer就会starvation。反之第二种情况，reader会starvation。</p>
+<h2 id="read-write-lock">
+  read write lock
+  <a class="anchor" href="#read-write-lock">#</a>
+</h2>
+<pre tabindex="0"><code>// read
+lock(c) {
+    c++;
+    if(c == 1) {
+        lock(g);
+    } 
+}
+unlock(c);
+// 临界区
+// 退出读
+lock(c) {
+    c--;
+    if(c == 0) {
+        unlock(g);
+    }
+}
+unlock(c);
+</code></pre><pre tabindex="0"><code>// 写
+lock(g);
+
+// 临界区。
+
+// 退出写
+unlock(g);
+</code></pre><p>先绕开读写锁的代码操作，首先对于读一个变量和写一个变量，需要一个<code>lock(g)</code>，<code>g</code>代表全局变量，一个读进程和一个写进程都可以对这个<code>g</code>进行<code>lock</code>和<code>unlock</code>。其次<code>counter</code>记录有几个被阻塞的读线程。计作<code>c</code>。<code>c = 0</code>；按照以往的经验，为了保证寄存器不会乱赋值，要对<code>c</code>进行加锁：<code>lock(c)</code></p>
+<p>上面两段代码的效果是：</p>
+<p>假设先来了一个读进程，<code>counter</code>锁住，<code>counter</code>自增到<code>1</code>，全局变量锁住，<code>counter</code>解锁，开始读。之后在上面进程读的时候又来一个进程，它们会一起读么？会，锁住<code>c</code>，<code>c</code>自增到2，跳过那个<code>if</code>（不重复lock <code>g</code>），<code>unlock counter</code>后一起读。假设突然来了一个写进程，它会等这一堆读进程完了再写。</p>
+<blockquote>
+<p>即：等<code>g</code>被读进程们解锁了再写。假设之后来了个读进程，它会插到这个写进程前面么？不会，因为写进程第一行有个<code>lock(g)</code>，这样达到了read write lock的效果。</p>
+</blockquote>
+<p>但是以上读写操作都有可能starvation，没有调度算法的后果就是这样。</p>
+<p><strong>综上，读写锁，是两把互斥锁的结合。</strong></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

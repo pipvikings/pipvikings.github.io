@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="进程和线程#（假定使用C&#43;&#43;或C面向服务器编程）
+并行（Concurrent）和并发（parallel）的区别是：单核CPU内的Multi Thread叫做Concurrent，而多核时代的Multi Thread叫做Parallel，即：真正存在在一个时刻多个Thread在执行而不是一个时间时刻多个Thread在执行。
+同时应运而生的有超线程技术，例如：四核八线程CPU代表了单核会有2个Thread在运行。面试考的有多线程并发和多进程并发，多进程并发涉及进程之间的七种沟通方式：pipe，semafore，fifo，message queue，shared memory，socket，signal。
+不论哪一种都涉及大量底层API，每一个功能包括的头文件全都不一样，在这里把这七种全介绍完，相当于用中文复述一遍Advanced Unix Programming Environment半本书的内容，而且目测这些内容的考题已经逼近社招的难度，所以在这里没必要赘述。
+相比我们已经粗略了解多进程编程相比于多线程编程的优势和劣势，那么接下来简单介绍一下多线程的背景。经过查阅各种博客，发现C&#43;&#43;11标准库包括了多线程的部分、包括了锁的部分，也就是说C&#43;&#43;11之前的程序全部都是用Linux下的pthread、Linux内置的lock（排除三方库），那么对于C&#43;&#43;的多进程支持呢？很巧，只有Boost库支持，那么我们如果不用Boost库，就只能用纯C混搭C&#43;&#43;来支持多进程。以上，就是对于这个话题的粗略回顾。
+以下C&#43;&#43;的例子来自于cpp reference，通过这些例子，我们可以大概了解S锁和X锁的原型
+std::threading#Class to represent individual threads of execution. std::thread类表示了执行中的单独线程
+A thread of execution is a sequence of instructions that can be executed concurrently with other such sequences in multithreading environments, while sharing a same address space. 执行中的线程是一系列指令的组合，这些指令可以在多线程环境下与其他指令并发执行，并共享同一寻址空间。
+An initialized thread object represents an active thread of execution; Such a thread object is joinable, and has a unique thread id.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="C&#43;&#43;的线程同步" />
+<meta property="og:description" content="进程和线程#（假定使用C&#43;&#43;或C面向服务器编程）
+并行（Concurrent）和并发（parallel）的区别是：单核CPU内的Multi Thread叫做Concurrent，而多核时代的Multi Thread叫做Parallel，即：真正存在在一个时刻多个Thread在执行而不是一个时间时刻多个Thread在执行。
+同时应运而生的有超线程技术，例如：四核八线程CPU代表了单核会有2个Thread在运行。面试考的有多线程并发和多进程并发，多进程并发涉及进程之间的七种沟通方式：pipe，semafore，fifo，message queue，shared memory，socket，signal。
+不论哪一种都涉及大量底层API，每一个功能包括的头文件全都不一样，在这里把这七种全介绍完，相当于用中文复述一遍Advanced Unix Programming Environment半本书的内容，而且目测这些内容的考题已经逼近社招的难度，所以在这里没必要赘述。
+相比我们已经粗略了解多进程编程相比于多线程编程的优势和劣势，那么接下来简单介绍一下多线程的背景。经过查阅各种博客，发现C&#43;&#43;11标准库包括了多线程的部分、包括了锁的部分，也就是说C&#43;&#43;11之前的程序全部都是用Linux下的pthread、Linux内置的lock（排除三方库），那么对于C&#43;&#43;的多进程支持呢？很巧，只有Boost库支持，那么我们如果不用Boost库，就只能用纯C混搭C&#43;&#43;来支持多进程。以上，就是对于这个话题的粗略回顾。
+以下C&#43;&#43;的例子来自于cpp reference，通过这些例子，我们可以大概了解S锁和X锁的原型
+std::threading#Class to represent individual threads of execution. std::thread类表示了执行中的单独线程
+A thread of execution is a sequence of instructions that can be executed concurrently with other such sequences in multithreading environments, while sharing a same address space. 执行中的线程是一系列指令的组合，这些指令可以在多线程环境下与其他指令并发执行，并共享同一寻址空间。
+An initialized thread object represents an active thread of execution; Such a thread object is joinable, and has a unique thread id." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://pipvkings.github.io/docs/example/table-of-contents/cpp_thread/" /><meta property="article:section" content="docs" />
+
+
+<title>C&#43;&#43;的线程同步 | 首頁介紹</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.a1bc3f1d714233dbb3581a7510c0be58c1aadad42dcdfaaecec1aaa38023c9e2.css" integrity="sha256-obw/HXFCM9uzWBp1EMC&#43;WMGq2tQtzfquzsGqo4AjyeI=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.f0c6fac7200a71399e3465a133f38930434c055e2ca71404d6ad0a7d22d66c03.js" integrity="sha256-8Mb6xyAKcTmeNGWhM/OJMENMBV4spxQE1q0KfSLWbAM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>首頁介紹</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Contents Post</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/" class="">After School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/meaning-of-work/" class="">上班的意義</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/2023scc/" class="">个人数据的标准合同条款</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/" class="">At School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading/" class="">A Review at Operator Overloading</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cppio/" class="">C&#43;&#43; IO的简单复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cpp_thread/" class="active">C&#43;&#43;的线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/lseek/" class="">lseek和空洞文件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/shared_p/" class="">shared_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/uniq_p/" class="">unique_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading-zh/" class="">对操作符重载的学习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/os-review/" class="">操作系统中的进程和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/smart_pointer/" class="">智能指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/type-casting-zh/" class="">浅谈C&#43;&#43;中的类型转换</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/sliding_windows_prot/" class="">滑动窗口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/rawp/" class="">裸指针和其修饰字</a>
+  
+
+        </li>
+      
+    
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>C&#43;&#43;的线程同步</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#进程和线程">进程和线程</a></li>
+    <li><a href="#stdthreading">std::threading</a></li>
+    <li><a href="#get_id">get_id</a></li>
+    <li><a href="#join">join</a></li>
+    <li><a href="#joinable">joinable</a></li>
+    <li><a href="#operator">operator=</a></li>
+    <li><a href="#swap">swap</a></li>
+    <li><a href="#detach">detach</a></li>
+    <li><a href="#stdmutex">std::mutex</a></li>
+    <li><a href="#lock">lock</a></li>
+    <li><a href="#unlock">unlock</a></li>
+    <li><a href="#try-lock">try lock</a></li>
+    <li><a href="#lock-guard">lock guard</a></li>
+    <li><a href="#adopt_lock-and-defer_lock">adopt_lock and defer_lock</a></li>
+    <li><a href="#unique-lock">unique lock</a></li>
+    <li><a href="#shared-lock">shared lock</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="进程和线程">
+  进程和线程
+  <a class="anchor" href="#%e8%bf%9b%e7%a8%8b%e5%92%8c%e7%ba%bf%e7%a8%8b">#</a>
+</h2>
+<p>（假定使用C++或C面向服务器编程）</p>
+<p>并行（Concurrent）和并发（parallel）的区别是：单核CPU内的Multi Thread叫做Concurrent，而多核时代的Multi Thread叫做Parallel，即：真正存在在一个时刻多个Thread在执行而不是一个时间时刻多个Thread在执行。</p>
+<p>同时应运而生的有超线程技术，例如：四核八线程CPU代表了单核会有2个Thread在运行。面试考的有多线程并发和多进程并发，多进程并发涉及进程之间的七种沟通方式：pipe，semafore，fifo，message queue，shared memory，socket，signal。</p>
+<p>不论哪一种都涉及大量底层API，每一个功能包括的头文件全都不一样，在这里把这七种全介绍完，相当于用中文复述一遍Advanced Unix Programming Environment半本书的内容，而且目测这些内容的考题已经逼近社招的难度，所以在这里没必要赘述。</p>
+<p>相比我们已经粗略了解多进程编程相比于多线程编程的优势和劣势，那么接下来简单介绍一下多线程的背景。经过查阅各种博客，发现C++11标准库包括了多线程的部分、包括了锁的部分，也就是说C++11之前的程序全部都是用Linux下的pthread、Linux内置的lock（排除三方库），那么对于C++的多进程支持呢？很巧，只有Boost库支持，那么我们如果不用Boost库，就只能用纯C混搭C++来支持多进程。以上，就是对于这个话题的粗略回顾。</p>
+<blockquote>
+<p>以下C++的例子来自于cpp reference，通过这些例子，我们可以大概了解S锁和X锁的原型</p>
+</blockquote>
+<h2 id="stdthreading">
+  std::threading
+  <a class="anchor" href="#stdthreading">#</a>
+</h2>
+<p>Class to represent individual threads of execution.
+std::thread类表示了执行中的单独线程</p>
+<p>A thread of execution is a sequence of instructions that can be executed concurrently with other such sequences in multithreading environments, while sharing a same address space.
+执行中的线程是一系列指令的组合，这些指令可以在多线程环境下与其他指令并发执行，并共享同一寻址空间。</p>
+<p>An initialized thread object represents an active thread of execution; Such a thread object is joinable, and has a unique thread id.
+一个初始化的`std::thread对象代表了一个激活了的对象，此对象被声明为joinable的，并且获得一个线程ID。</p>
+<p>A default-constructed (non-initialized) thread object is not joinable, and its thread id is common for all non-joinable threads.
+默认构造的线程对象并不是initialized的，所以不是joinable的，它的线程ID和所有non-joinable的thread一样。</p>
+<p>A joinable thread becomes not joinable if moved from, or if either join or detach are called on them.
+一个joinable的thread如果使用了move或者join和detach，就会变成non-joinable。</p>
+<pre tabindex="0"><code>// thread example
+#include &lt;iostream&gt;       // std::cout
+#include &lt;thread&gt;         // std::thread
+
+void foo() 
+{
+  // do stuff...
+}
+
+void bar(int x)
+{
+  // do stuff...
+}
+
+int main() 
+{
+  std::thread first (foo);     // spawn new thread that calls foo()
+
+
+  std::cout &lt;&lt; &#34;main, foo and bar now execute concurrently...\n&#34;;
+
+  // synchronize threads:
+  first.join();                // pauses until first finishes
+  second.join();               // pauses until second finishes
+
+  std::cout &lt;&lt; &#34;foo and bar completed.\n&#34;;
+
+  return 0;
+}
+</code></pre><h2 id="get_id">
+  get_id
+  <a class="anchor" href="#get_id">#</a>
+</h2>
+<p>假设当前thread是joinable的，<code>get_id()</code>函数返回当前线程id，否则返回默认<code>thread::id</code></p>
+<pre tabindex="0"><code>// thread::get_id / this_thread::get_id
+#include &lt;iostream&gt;       // std::cout
+#include &lt;thread&gt;         // std::thread, std::thread::id, std::this_thread::get_id
+#include &lt;chrono&gt;         // std::chrono::seconds
+
+std::thread::id main_thread_id = std::this_thread::get_id();
+
+void is_main_thread() {
+  if ( main_thread_id == std::this_thread::get_id() )
+    std::cout &lt;&lt; &#34;This is the main thread.\n&#34;;
+  else
+    std::cout &lt;&lt; &#34;This is not the main thread.\n&#34;;
+}
+
+int main() 
+{
+  is_main_thread();
+  std::thread th (is_main_thread);
+  th.join();
+}
+</code></pre><h2 id="join">
+  join
+  <a class="anchor" href="#join">#</a>
+</h2>
+<p><code>join()</code>的返回类型是<code>void</code>，当线程结束时返回，否则block waiting，在执行<code>join()</code>之后，该thread变为none joinable thread</p>
+<pre tabindex="0"><code>// example for thread::join
+#include &lt;iostream&gt;       // std::cout
+#include &lt;thread&gt;         // std::thread, std::this_thread::sleep_for
+#include &lt;chrono&gt;         // std::chrono::seconds
+
+void pause_thread(int n) 
+{
+  std::this_thread::sleep_for (std::chrono::seconds(n));
+  std::cout &lt;&lt; &#34;pause of &#34; &lt;&lt; n &lt;&lt; &#34; seconds ended\n&#34;;
+}
+
+int main() 
+{
+  std::cout &lt;&lt; &#34;Spawning 3 threads...\n&#34;;
+  std::thread t1 (pause_thread,1);
+  std::thread t2 (pause_thread,2);
+  std::thread t3 (pause_thread,3);
+  std::cout &lt;&lt; &#34;Done spawning threads. Now waiting for them to join:\n&#34;;
+  t1.join();
+  t2.join();
+  t3.join();
+  std::cout &lt;&lt; &#34;All threads joined!\n&#34;;
+
+  return 0;
+}
+</code></pre><h2 id="joinable">
+  joinable
+  <a class="anchor" href="#joinable">#</a>
+</h2>
+<p>一个线程有三种情况是none joinable的，第一种是当它被default construct的时候，第二种情况是它被<code>detach</code>或者<code>join</code>了之后，第三种情况是用了<code>move</code>语法给了其他线程。</p>
+<pre tabindex="0"><code>// example for thread::joinable
+#include &lt;iostream&gt;       // std::cout
+#include &lt;thread&gt;         // std::thread
+
+void mythread() 
+{
+  // do stuff...
+}
+
+int main() 
+{
+  std::thread foo;
+  std::thread bar(mythread);
+
+  std::cout &lt;&lt; &#34;Joinable after construction:\n&#34; &lt;&lt; std::boolalpha;
+  std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; foo.joinable() &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; bar.joinable() &lt;&lt; &#39;\n&#39;;
+
+  if (foo.joinable()) foo.join();
+  if (bar.joinable()) bar.join();
+
+  std::cout &lt;&lt; &#34;Joinable after joining:\n&#34; &lt;&lt; std::boolalpha;
+  std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; foo.joinable() &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; bar.joinable() &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><h2 id="operator">
+  operator=
+  <a class="anchor" href="#operator">#</a>
+</h2>
+<p>thread对象不能被copy，假设左值是none joinable的，那么右值就会给左值，然后右值变成&quot;as if default contructed&quot;的样子。假设左值是joinable的，就会terminate。</p>
+<pre tabindex="0"><code>// example for thread::operator=
+#include &lt;iostream&gt;       // std::cout
+#include &lt;thread&gt;         // std::thread, std::this_thread::sleep_for
+#include &lt;chrono&gt;         // std::chrono::seconds
+
+void pause_thread(int n) 
+{
+  std::this_thread::sleep_for (std::chrono::seconds(n));
+  std::cout &lt;&lt; &#34;pause of &#34; &lt;&lt; n &lt;&lt; &#34; seconds ended\n&#34;;
+}
+
+int main() 
+{
+  std::thread threads[5];                         // default-constructed threads
+
+  std::cout &lt;&lt; &#34;Spawning 5 threads...\n&#34;;
+  for (int i=0; i&lt;5; ++i)
+    threads[i] = std::thread(pause_thread,i+1);   // move-assign threads
+
+  std::cout &lt;&lt; &#34;Done spawning threads. Now waiting for them to join:\n&#34;;
+  for (int i=0; i&lt;5; ++i)
+    threads[i].join();
+
+  std::cout &lt;&lt; &#34;All threads joined!\n&#34;;
+
+  return 0;
+}
+</code></pre><h2 id="swap">
+  swap
+  <a class="anchor" href="#swap">#</a>
+</h2>
+<p>交换线程id，stack overflow上有讨论这个到底是不是只交换id，有一个回答是说不要把它当作交换id，而是交换线程本身。（待考究）</p>
+<pre tabindex="0"><code>#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &lt;chrono&gt;
+
+void foo()
+{
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+}
+
+void bar()
+{
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+}
+
+int main()
+{
+    std::thread t1(foo);
+    std::thread t2(bar);
+
+    std::cout &lt;&lt; &#34;thread 1 id: &#34; &lt;&lt; t1.get_id() &lt;&lt; &#39;\n&#39;
+              &lt;&lt; &#34;thread 2 id: &#34; &lt;&lt; t2.get_id() &lt;&lt; &#39;\n&#39;;
+
+    std::swap(t1, t2);
+
+    std::cout &lt;&lt; &#34;after std::swap(t1, t2):&#34; &lt;&lt; &#39;\n&#39;
+              &lt;&lt; &#34;thread 1 id: &#34; &lt;&lt; t1.get_id() &lt;&lt; &#39;\n&#39;
+              &lt;&lt; &#34;thread 2 id: &#34; &lt;&lt; t2.get_id() &lt;&lt; &#39;\n&#39;;
+
+    t1.swap(t2);
+
+    std::cout &lt;&lt; &#34;after t1.swap(t2):&#34; &lt;&lt; &#39;\n&#39;
+              &lt;&lt; &#34;thread 1 id: &#34; &lt;&lt; t1.get_id() &lt;&lt; &#39;\n&#39;
+              &lt;&lt; &#34;thread 2 id: &#34; &lt;&lt; t2.get_id() &lt;&lt; &#39;\n&#39;;
+
+    t1.join();
+    t2.join();
+}
+</code></pre><h2 id="detach">
+  detach
+  <a class="anchor" href="#detach">#</a>
+</h2>
+<p>线程在detach之后就会none joinable，独立运行，不block waiting，一直到结束。</p>
+<pre tabindex="0"><code>#include &lt;iostream&gt;       // std::cout
+#include &lt;thread&gt;         // std::thread, std::this_thread::sleep_for
+#include &lt;chrono&gt;         // std::chrono::seconds
+
+void pause_thread(int n) 
+{
+  std::this_thread::sleep_for (std::chrono::seconds(n));
+  std::cout &lt;&lt; &#34;pause of &#34; &lt;&lt; n &lt;&lt; &#34; seconds ended\n&#34;;
+}
+
+int main() 
+{
+  std::cout &lt;&lt; &#34;Spawning and detaching 3 threads...\n&#34;;
+  std::thread (pause_thread,1).detach();
+  std::thread (pause_thread,2).detach();
+  std::thread (pause_thread,3).detach();
+  std::cout &lt;&lt; &#34;Done spawning threads.\n&#34;;
+
+  std::cout &lt;&lt; &#34;(the main thread will now pause for 5 seconds)\n&#34;;
+  // give the detached threads time to finish (but not guaranteed!):
+  pause_thread(5);
+  return 0;
+}
+</code></pre><h2 id="stdmutex">
+  std::mutex
+  <a class="anchor" href="#stdmutex">#</a>
+</h2>
+<p>mutex是一个lockable的对象，提供critical setion的exclusive access</p>
+<pre tabindex="0"><code>// mutex example
+#include &lt;iostream&gt;       // std::cout
+#include &lt;thread&gt;         // std::thread
+#include &lt;mutex&gt;          // std::mutex
+
+std::mutex mtx;           // mutex for critical section
+
+void print_block (int n, char c) {
+  // critical section (exclusive access to std::cout signaled by locking mtx):
+  mtx.lock();
+  for (int i=0; i&lt;n; ++i) { std::cout &lt;&lt; c; }
+  std::cout &lt;&lt; &#39;\n&#39;;
+  mtx.unlock();
+}
+
+int main ()
+{
+  std::thread th1 (print_block,50,&#39;*&#39;);
+  std::thread th2 (print_block,50,&#39;$&#39;);
+
+  th1.join();
+  th2.join();
+
+  return 0;
+}
+</code></pre><h2 id="lock">
+  lock
+  <a class="anchor" href="#lock">#</a>
+</h2>
+<p>调用的线程lock了mutex, 假设该mutex并没有被其他线程占用，那么这个调用线程就将其lock, 此线程拥有这个mutex，直到其调用unlock函数。否则block waiting或者deadlock，block waiting是该mutex已经被其他线程占用，死锁是因为该mutex被该线程的递归（重复）调用抢走了&quot;key&quot;，导致第一个线程无法unlock。（这个地方很难理解，需要用recursive lock来解死锁），返回类型void。</p>
+<pre tabindex="0"><code>// mutex::lock/unlock
+#include &lt;iostream&gt;       // std::cout
+#include &lt;thread&gt;         // std::thread
+#include &lt;mutex&gt;          // std::mutex
+
+std::mutex mtx;           // mutex for critical section
+
+void print_thread_id (int id) {
+  // critical section (exclusive access to std::cout signaled by locking mtx):
+  mtx.lock();
+  std::cout &lt;&lt; &#34;thread #&#34; &lt;&lt; id &lt;&lt; &#39;\n&#39;;
+  mtx.unlock();
+}
+
+int main ()
+{
+  std::thread threads[10];
+  // spawn 10 threads:
+  for (int i=0; i&lt;10; ++i)
+    threads[i] = std::thread(print_thread_id,i+1);
+
+  for (auto&amp; th : threads) th.join();
+
+  return 0;
+}
+</code></pre><h2 id="unlock">
+  unlock
+  <a class="anchor" href="#unlock">#</a>
+</h2>
+<p>只需要注意一点，unlock一个没lock的mutex是undefined behavior</p>
+<h2 id="try-lock">
+  try lock
+  <a class="anchor" href="#try-lock">#</a>
+</h2>
+<p>try lock也是会递归死锁的。假设被mutex其他thread占用，那么return false，否则return true</p>
+<pre tabindex="0"><code>// mutex::try_lock example
+#include &lt;iostream&gt;       // std::cout
+#include &lt;thread&gt;         // std::thread
+#include &lt;mutex&gt;          // std::mutex
+
+volatile int counter (0); // non-atomic counter
+std::mutex mtx;           // locks access to counter
+
+void attempt_10k_increases () {
+  for (int i=0; i&lt;10000; ++i) {
+    if (mtx.try_lock()) {   // only increase if currently not locked:
+      ++counter;
+      mtx.unlock();
+    }
+  }
+}
+
+int main ()
+{
+  std::thread threads[10];
+  // spawn 10 threads:
+  for (int i=0; i&lt;10; ++i)
+    threads[i] = std::thread(attempt_10k_increases);
+
+  for (auto&amp; th : threads) th.join();
+  std::cout &lt;&lt; counter &lt;&lt; &#34; successful increases of the counter.\n&#34;;
+
+  return 0;
+}
+</code></pre><p>首先强调一下这并不是dead lock代码，因为并不存在一个线程内拿两个lock的情况，正确的输出结果大概是八万多，volatile的目的是声明一个被多线程共享的变量，被volatile声明的变量不会被从cache中读值（但这并不意味着它atomic了，它这里只起声明作用）</p>
+<h2 id="lock-guard">
+  lock guard
+  <a class="anchor" href="#lock-guard">#</a>
+</h2>
+<p>官网说了一句很矛盾的话：“Note though that the lock_guard object does not manage the lifetime of the mutex object in any way: the duration of the mutex object shall extend at least until the destruction of the lock_guard that locks it.” 但是我们很容易看出来它的unlock是和智能指针一样，由函数的生命周期决定的，结束调用析构函数的unlock。官网的意思很有可能是lock guard并不确保它一直托管lock，开发者需要自己确定在析构函数调用之前lock是有效的。</p>
+<pre tabindex="0"><code>// lock_guard example
+#include &lt;iostream&gt;       // std::cout
+#include &lt;thread&gt;         // std::thread
+#include &lt;mutex&gt;          // std::mutex, std::lock_guard
+#include &lt;stdexcept&gt;      // std::logic_error
+
+std::mutex mtx;
+
+void print_even (int x) {
+  if (x%2==0) std::cout &lt;&lt; x &lt;&lt; &#34; is even\n&#34;;
+  else throw (std::logic_error(&#34;not even&#34;));
+}
+
+void print_thread_id (int id) {
+  try {
+    // using a local lock_guard to lock mtx guarantees unlocking on destruction / exception:
+    std::lock_guard&lt;std::mutex&gt; lck (mtx);
+    print_even(id);
+  }
+  catch (std::logic_error&amp;) {
+    std::cout &lt;&lt; &#34;[exception caught]\n&#34;;
+  }
+}
+
+int main ()
+{
+  std::thread threads[10];
+  // spawn 10 threads:
+  for (int i=0; i&lt;10; ++i)
+    threads[i] = std::thread(print_thread_id,i+1);
+
+  for (auto&amp; th : threads) th.join();
+
+  return 0;
+}
+</code></pre><h2 id="adopt_lock-and-defer_lock">
+  adopt_lock and defer_lock
+  <a class="anchor" href="#adopt_lock-and-defer_lock">#</a>
+</h2>
+<pre tabindex="0"><code>std::lock(m1, m2); // calling thread locks the mutex
+std::lock_guard&lt;std::mutex&gt; lock1(m1, std::adopt_lock);    std::lock_guard&lt;std::mutex&gt; lock2(m2, std::adopt_lock);
+// access shared data protected by the m1 and m2
+</code></pre><pre tabindex="0"><code>std::unique_lock&lt;std::mutex&gt; lock1(m1, std::defer_lock);    std::unique_lock&lt;std::mutex&gt; lock2(m2, std::defer_lock);    
+std::lock(lock1, lock2);
+// access shared data protected by the m1 and m2
+</code></pre><p>defer lock假定mutex无锁，adopt lock假定有锁。unique lock对于无defer lock和adopt lock或者try to lock的会报错，lock guard不会，所以lock guard有很大的机率block一个线程两次导致死锁。</p>
+<h2 id="unique-lock">
+  unique lock
+  <a class="anchor" href="#unique-lock">#</a>
+</h2>
+<p>unique lock和lock guard差不多。</p>
+<pre tabindex="0"><code>// unique_lock constructor example
+#include &lt;iostream&gt;       // std::cout
+#include &lt;thread&gt;         // std::thread
+#include &lt;mutex&gt;          // std::mutex, std::lock, std::unique_lock
+                          // std::adopt_lock, std::defer_lock
+std::mutex foo,bar;
+
+void task_a () {
+  std::lock (foo,bar);         // simultaneous lock (prevents deadlock)
+  std::unique_lock&lt;std::mutex&gt; lck1 (foo,std::adopt_lock);
+  std::unique_lock&lt;std::mutex&gt; lck2 (bar,std::adopt_lock);
+  std::cout &lt;&lt; &#34;task a\n&#34;;
+  // (unlocked automatically on destruction of lck1 and lck2)
+}
+
+void task_b () {
+  // foo.lock(); bar.lock(); // replaced by:
+  std::unique_lock&lt;std::mutex&gt; lck1, lck2;
+  lck1 = std::unique_lock&lt;std::mutex&gt;(bar,std::defer_lock);
+  lck2 = std::unique_lock&lt;std::mutex&gt;(foo,std::defer_lock);
+  std::lock (lck1,lck2);       // simultaneous lock (prevents deadlock)
+  std::cout &lt;&lt; &#34;task b\n&#34;;
+  // (unlocked automatically on destruction of lck1 and lck2)
+}
+int main ()
+{
+  std::thread th1 (task_a);
+  std::thread th2 (task_b);
+
+  th1.join();
+  th2.join();
+
+  return 0;
+}
+</code></pre><h2 id="shared-lock">
+  shared lock
+  <a class="anchor" href="#shared-lock">#</a>
+</h2>
+<p>shared lock是cpp14的内容，如果你去cppreference上查是可以查到的，但是你并不能在cplusplus com上查到，因为这个网站只包括c++11的简单教程。</p>
+<pre tabindex="0"><code>#include &lt;iostream&gt;
+#include &lt;mutex&gt;
+#include &lt;string&gt;
+#include &lt;shared_mutex&gt;
+#include &lt;thread&gt;
+
+std::string file = &#34;Original content.&#34;; // Simulates a file
+std::mutex output_mutex; // mutex that protects output operations.
+std::shared_mutex file_mutex; // reader/writer mutex
+
+void read(int id)
+{
+    std::string content;
+    {
+        std::shared_lock lock(file_mutex, std::defer_lock); // Do not lock it first.
+        lock.lock(); // Lock it here.
+        content = file;
+    }
+    std::lock_guard lock(output_mutex);
+    std::cout &lt;&lt; &#34;Contents read by reader #&#34; &lt;&lt; id &lt;&lt; &#34;: &#34; &lt;&lt; content &lt;&lt; &#39;\n&#39;;
+}
+
+void write()
+{
+    {
+        std::lock_guard file_lock(file_mutex);
+        file = &#34;New content&#34;;
+    }
+    std::lock_guard output_lock(output_mutex);
+    std::cout &lt;&lt; &#34;New content saved.\n&#34;;
+}
+
+int main()
+{
+    std::cout &lt;&lt; &#34;Two readers reading from file.\n&#34;
+              &lt;&lt; &#34;A writer competes with them.\n&#34;;
+    std::thread reader1(read, 1);
+    std::thread reader2(read, 2);
+    std::thread writer(write);
+    reader1.join();
+    reader2.join();
+    writer.join();
+    std::cout &lt;&lt; &#34;The first few operations to file are done.\n&#34;;
+    reader1 = std::thread(read, 3);
+    reader1.join();
+}
+</code></pre><p>我们可以看到，这里的share lock是共享模式的，和操作系统教材里说的读写锁意义一致，此外cout需要用互斥锁保证输出正常。</p>
+<p>差不多先到这，C++的多线程标准库有atomic future conditional variable thread mutex 等一坨库，这里只挑最简单的介绍</p>
+<blockquote>
+<p><strong>由上我们可以窥见，数据库教材中所谓S锁与X锁在具体实操中的原型。</strong></p>
+</blockquote>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#进程和线程">进程和线程</a></li>
+    <li><a href="#stdthreading">std::threading</a></li>
+    <li><a href="#get_id">get_id</a></li>
+    <li><a href="#join">join</a></li>
+    <li><a href="#joinable">joinable</a></li>
+    <li><a href="#operator">operator=</a></li>
+    <li><a href="#swap">swap</a></li>
+    <li><a href="#detach">detach</a></li>
+    <li><a href="#stdmutex">std::mutex</a></li>
+    <li><a href="#lock">lock</a></li>
+    <li><a href="#unlock">unlock</a></li>
+    <li><a href="#try-lock">try lock</a></li>
+    <li><a href="#lock-guard">lock guard</a></li>
+    <li><a href="#adopt_lock-and-defer_lock">adopt_lock and defer_lock</a></li>
+    <li><a href="#unique-lock">unique lock</a></li>
+    <li><a href="#shared-lock">shared lock</a></li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

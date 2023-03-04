@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="implicit conversation overview#implicit conversion: int to short, short to int, short to bool, float to bool &hellip;. (without explicit converter), also called standard conversion.
+converting type such as int to float is known as promotion, is guaranteed to produced the same value in the destination type otherwise, may not always be able to represent the same value exactly (丢失精度问题，编译器会发出警告，可以通过explicit conversion去消除) for non-fundamental types: arrays and functions implicitly convert to pointers pointers in general allow the following conversions: Null pointers can be converted to pointers of any type Pointers to any type can be converted to void pointers.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="浅谈C&#43;&#43;中的类型转换" />
+<meta property="og:description" content="implicit conversation overview#implicit conversion: int to short, short to int, short to bool, float to bool &hellip;. (without explicit converter), also called standard conversion.
+converting type such as int to float is known as promotion, is guaranteed to produced the same value in the destination type otherwise, may not always be able to represent the same value exactly (丢失精度问题，编译器会发出警告，可以通过explicit conversion去消除) for non-fundamental types: arrays and functions implicitly convert to pointers pointers in general allow the following conversions: Null pointers can be converted to pointers of any type Pointers to any type can be converted to void pointers." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://pipvkings.github.io/docs/example/table-of-contents/type-casting-zh/" /><meta property="article:section" content="docs" />
+
+
+<title>浅谈C&#43;&#43;中的类型转换 | 首頁介紹</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.a1bc3f1d714233dbb3581a7510c0be58c1aadad42dcdfaaecec1aaa38023c9e2.css" integrity="sha256-obw/HXFCM9uzWBp1EMC&#43;WMGq2tQtzfquzsGqo4AjyeI=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.f0c6fac7200a71399e3465a133f38930434c055e2ca71404d6ad0a7d22d66c03.js" integrity="sha256-8Mb6xyAKcTmeNGWhM/OJMENMBV4spxQE1q0KfSLWbAM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>首頁介紹</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Contents Post</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/" class="">After School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/meaning-of-work/" class="">上班的意義</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/2023scc/" class="">个人数据的标准合同条款</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/" class="">At School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading/" class="">A Review at Operator Overloading</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cppio/" class="">C&#43;&#43; IO的简单复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cpp_thread/" class="">C&#43;&#43;的线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/lseek/" class="">lseek和空洞文件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/shared_p/" class="">shared_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/uniq_p/" class="">unique_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading-zh/" class="">对操作符重载的学习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/os-review/" class="">操作系统中的进程和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/smart_pointer/" class="">智能指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/type-casting-zh/" class="active">浅谈C&#43;&#43;中的类型转换</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/sliding_windows_prot/" class="">滑动窗口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/rawp/" class="">裸指针和其修饰字</a>
+  
+
+        </li>
+      
+    
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>浅谈C&#43;&#43;中的类型转换</strong>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="implicit-conversation-overview">
+  implicit conversation overview
+  <a class="anchor" href="#implicit-conversation-overview">#</a>
+</h2>
+<p>implicit conversion: int to short, short to int, short to bool, float to bool &hellip;. (without explicit converter), also called standard conversion.</p>
+<ul>
+<li>converting type such as int to float is known as promotion, is guaranteed to produced the same value in the destination type</li>
+<li>otherwise, may not always be able to represent the same value exactly (丢失精度问题，编译器会发出警告，可以通过explicit conversion去消除)
+for non-fundamental types:</li>
+<li>arrays and functions implicitly convert to pointers</li>
+<li>pointers in general allow the following conversions:
+<ul>
+<li>Null pointers can be converted to pointers of any type</li>
+<li>Pointers to any type can be converted to void pointers.</li>
+<li>Pointer upcast: pointers to a derived class can be converted to a pointer of an accessible and unambiguous base class, without modifying its const or volatile qualification. (子类指针可以转父类)</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>#include &lt;iostream&gt;
+using namespace std;
+class A {};
+class B {
+public:
+// conversion from A (constructor):
+  B (const A&amp; a) {}
+ // conversion from A (assignment):
+  B&amp; operator= (const A&amp; a) {
+    return *this;
+  }
+ // conversion to A (type-cast operator)
+  operator A() {
+    return A();
+  }
+};
+</code></pre><pre tabindex="0"><code>int main ()
+{
+  A foo;
+  B bar = foo;    // calls constructor
+  bar = foo;      // calls assignment
+  foo = bar;      // calls type-cast operator
+  return 0;
+}
+</code></pre><p>浅析一下上述官网的例子，构造函数的调用，<code>A foo</code>调用了<code>A</code>类默认的构造函数，<code>B bar = foo;</code>这个是调用了自己实现的拷贝构造函数<code>B (const A&amp; a) {}</code>，然后<code>bar = foo;</code>调用了<code>B&amp; operator=(const A&amp; a) { return *this; }</code>，这个是一个针对等号的二元运算符重载，传入参数是<code>const A&amp; a</code>，对应的是等号的右边，然后返回类型<code>B&amp;</code>对应等号的左边，因为<code>B bar</code>是已存的，所以可以接受一个带引用的返回值<code>B&amp;</code>，这种叫做assignment也就是<strong>赋值</strong>，也就是说，赋值的本质就是<strong>默认的或者不是默认的类内<code>=</code>操作符重载</strong></p>
+<h2 id="type-cast-operator">
+  type cast operator
+  <a class="anchor" href="#type-cast-operator">#</a>
+</h2>
+<pre tabindex="0"><code>#include &lt;iostream&gt;
+class D {
+public: 
+  D(double d) : d_(d);
+  operator int() const {
+    std::cout &lt;&lt; &#34;int d is called&#34; &lt;&lt; std::endl;
+    return static_cast&lt;int&gt;(d_);
+  }
+private:
+   double d_;
+};
+int add(int a, int b) {
+  return a + b;
+}
+int main() {
+  D d1 = 1.1;
+  D d2 = 1.2;
+  std::cout &lt;&lt; add(d1, d2) &lt;&lt; std::endl;
+}
+</code></pre><p>如上所示，type cast operator将类转换为对应的<code>int</code></p>
+<h2 id="tips">
+  tips
+  <a class="anchor" href="#tips">#</a>
+</h2>
+<ul>
+<li>构造函数不返回值，拷贝构造函数不返回值</li>
+<li>拷贝构造函数的调用：
+<ul>
+<li>当参数的时候</li>
+<li>当返回值的时候</li>
+<li><code>A a = b</code>;</li>
+<li><code>A a(b)</code>;</li>
+</ul>
+</li>
+<li>上述例子叫做assignment而不是copy</li>
+<li><code>T t1; T t2 = t1; </code>这是是copy不是assignment，而<code>T t1; T t2; t2 = t1;</code> ，这是assignment而不是copy</li>
+<li>默认的运算符<code>=</code>是浅拷贝，默认的构造函数也是浅拷贝，二者的区别在于<code>T t1; T t2; t2 = t1;</code>的赋值场景必须是建立在源对象与目标对象均已声明的基础上；而拷贝构造函数的赋值，必须是针对新创建对象的场景。</li>
+</ul>
+<h2 id="explicit">
+  explicit
+  <a class="anchor" href="#explicit">#</a>
+</h2>
+<pre tabindex="0"><code>// explicit:
+#include &lt;iostream&gt;
+using namespace std;
+
+class A {};
+
+class B {
+public:
+  explicit B (const A&amp; x) {}
+  B&amp; operator= (const A&amp; x) {return *this;}
+  operator A() {return A();}
+};
+
+void fn (B x) {}
+
+int main ()
+{
+  A foo;
+  B bar (foo);
+  bar = foo;
+  foo = bar;
+  
+//  fn (foo);  // not allowed for explicit ctor.
+  fn (bar);  
+
+  return 0;
+}
+</code></pre><ul>
+<li>在C++中，<code>explicit</code>关键字用来修饰类的构造函数，被修饰的构造函数的类，不能发生相应的隐式类型转换，只能以显示的方式进行类型转换</li>
+<li><code>explicit</code>关键字只能用于类内部的构造函数声明上。</li>
+<li><code>explicit</code>关键字作用于单个参数的构造函数。</li>
+</ul>
+<p>下述<code>main</code>里的三行<code>Circle</code>全都是implicit conversion</p>
+<pre tabindex="0"><code>class Circle {
+public:
+  Circle(double r) : R(r) {}  
+  Circle(int x, int y = 0) : X(x), Y(y) {}
+  Circle(const Circle&amp; c) :  R(c.R), X(c.X), Y(c.Y) {} 
+private:
+  double R;
+  int X;
+  int Y;
+};
+int main() {
+   Circle A = 1.23; 
+   Circle B = 123;
+   Circle C = A;  
+}
+</code></pre><pre tabindex="0"><code>class Circle 
+{ 
+  public: 
+      explicit Circle(double r) : R(r) {} 
+      explicit Circle(int x, int y = 0) : X(x), Y(y) {} 
+      explicit Circle(const Circle&amp; c) : R(c.R), X(c.X), Y(c.Y) {} 
+  private: 
+      double R; 
+      int    X; 
+      int    Y; 
+}; 
+  
+int _tmain(int argc, _TCHAR* argv[]) 
+{ 
+  //3句都会报错 
+  //Circle A = 1.23;  
+  //Circle B = 123; 
+  //Circle C = A; 
+      
+  //只能用显示的方式调用了 
+  //未给拷贝构造函数加explicit之前可以这样 
+    Circle A = Circle(1.23); 
+    Circle B = Circle(123); 
+    Circle C = A; 
+  
+  //给拷贝构造函数加了explicit后只能这样了 
+    Circle A(1.23); 
+    Circle B(123); 
+    Circle C(A); 
+    return 0; 
+} 
+</code></pre><p>加了explicit关键字后，可防止以上隐式类型转换发生，<strong>不要定义隐式类型转换. 对于转换运算符和单参数构造函数, 请使用 explicit 关键字</strong></p>
+<h2 id="type-casting">
+  type casting
+  <a class="anchor" href="#type-casting">#</a>
+</h2>
+<p>C++ is a strong-typed language. Many conversions, specially those that imply a different interpretation of the value, require an explicit conversion, known in C++ as type-casting. There exist two main syntaxes for generic type-casting: functional and c-like:</p>
+<pre tabindex="0"><code>double x = 10.3;
+int y;
+y = int (x);    // functional notation
+y = (int) x;    // c-like cast notation 
+</code></pre><pre tabindex="0"><code>// class type-casting
+#include &lt;iostream&gt;
+using namespace std;
+
+class Dummy {
+    double i,j;
+};
+
+class Addition {
+    int x,y;
+  public:
+    Addition (int a, int b) { x=a; y=b; }
+    int result() { return x+y;}
+};
+
+int main () {
+  Dummy d;
+  Addition * padd;
+  padd = (Addition*) &amp;d;
+  cout &lt;&lt; padd-&gt;result();
+  return 0;
+}
+</code></pre><p>The program declares a pointer to Addition, but then it assigns to it a reference to an object of another unrelated type using explicit type-casting: <code>padd = (Addition*) &amp;d</code>;
+Unrestricted explicit type-casting allows to convert any pointer into any other pointer type, independently of the types they point to. The subsequent call to member result will produce either a run-time error or some other unexpected results.</p>
+<p>不加限制的类型转换可以任意乱转，就如同上面的例子一样，<code>Dummy</code>类和<code>Addition</code>类没有任何关系，但是我们定义了一个<code>Addition</code>类型的指针、一个普通的<code>Dummy</code>对象<code>d</code>，然后取<code>d</code>的指针，在<code>&amp;d</code>左边加上<code>(Addition*)</code> ，这样竟然就可以赋值给一个<code>Addition</code>的指针变量了，显然这是不对的。</p>
+<h2 id="const-cast的一些坑">
+  const cast的一些坑
+  <a class="anchor" href="#const-cast%e7%9a%84%e4%b8%80%e4%ba%9b%e5%9d%91">#</a>
+</h2>
+<pre tabindex="0"><code>// const_cast
+#include &lt;iostream&gt;
+using namespace std;
+
+void print (char * str)
+{
+  cout &lt;&lt; str &lt;&lt; &#39;\n&#39;;
+}
+
+int main () {
+  const char * c = &#34;sample text&#34;;
+  print ( const_cast&lt;char *&gt; (c) );
+  return 0;
+}
+</code></pre><p>以上是cpp官网的例子，它的意思是一个<code>const char*</code> 变量可以用<code>const cast</code>去掉<code>const</code>限制来符合某些函数的参数限制</p>
+<p>刚碰编程的初学者可能会尝试以下语句</p>
+<pre tabindex="0"><code>const int cst = 10;
+int temp = cst;
+temp = 20;
+</code></pre><p>要更改<code>const int</code>型变量<code>cst</code>的值，觉得改了<code>temp</code>, <code>cst</code>就会改变，实则不会</p>
+<p>即使用了指针改，也是不对的</p>
+<pre tabindex="0"><code>const int cst = 10;
+int *temp = &amp;cst;
+*temp = 20;
+</code></pre><p>编译器会说 Error: invalid conversion from <code>'const int*'</code> to <code>'int*'</code>，也就是说<code>const int</code>取<code>&amp;</code>地址之后是一个<code>const int *</code>而不是<code>int *</code>, <code>const int *</code>也是不可改的，<strong>注意c语言是可以这样改但是会给一个warning，而c++不可以</strong></p>
+<pre tabindex="0"><code>const int cst = 10;
+int&amp; temp = cst;
+temp = 20;
+</code></pre><p>那么假设用引用可以么？依然不可以，会报错成Error: invalid initialization of reference of type <code>'int&amp;'</code> from expression of type <code>'const int'</code>，对于c语言，c语言没有引用只有取地址<code>&amp;</code>，这两种情况报错的语法问题上, 一个是invalid conversion from x to y, 一个是invalid initialization of ref x of type x。</p>
+<blockquote>
+<p>那么如何更改一个const的值呢？c系语言的优点在于任意指针可以转换成彼此，这样就不存在一个<code>const int*</code>不能赋值给<code>int*</code>的问题了，参考上述中<code>Dummy</code>类指针甚至可以转成一个和它毫无关系的类，<code>const</code>指针也是可以的</p>
+</blockquote>
+<pre tabindex="0"><code>const int constant = 10;
+int* modifier = (int*)(&amp;constant);
+</code></pre><p>等同于const cast</p>
+<pre tabindex="0"><code>const int constant = 21;
+const int* const_p = &amp;constant;
+int* modifier = const_cast&lt;int*&gt;(const_p);
+*modifier = 7;
+</code></pre><p>运行打印<code>constant</code>的时候，却发现依旧是21，打印<code>*const_p</code>的时候也是21，然后打<code>*modifiler</code>却是7，即使这三个的地址全都是一个地址。</p>
+<pre tabindex="0"><code>#include &lt;iostream&gt;
+
+using namespace std;
+
+int main()
+{
+  const int a = 10;
+  const int* pa = &amp;a;
+  int* pb = (int*)pa;
+  *pb = 100;
+  cout &lt;&lt; a &lt;&lt; endl;
+  cout &lt;&lt; *pb &lt;&lt; endl;
+  return 0;
+}
+</code></pre><p>同样这个例子第一个输出的是100，第二个输出的是10</p>
+<p>鉴于上述几段例子是某博客扒下来的，那篇blog的评论区有人指出在vs2008环境下，debug中值是改了的，楼主用的是xcode，我那个例子用的是online gdb（const值被改了，我们假定的是const不被改），有人指出在调试中是这样，最后结果仍然是楼主的吻合的（<code>const</code>最后输出结果没被改但是调试中被改了），有人评论指出是编译器的问题，编译器识别出<code>const int xxx = 100;</code>，然后结尾<code>cout &lt;&lt; x;</code>的时候不论如何编译器都当作100输出（常量折叠），但是编译为了检查上下文整体语法只能将计就计的逐个编译，又有人指出<code>int a = 100; const int b = a;</code>可以避免常量折叠，这就是编译器实现的问题。不过已经没有深究的必要了。总之，不要尝试给一个<code>const*</code>变量去掉<code>const*</code>赋值。</p>
+<h2 id="static-cast">
+  static cast
+  <a class="anchor" href="#static-cast">#</a>
+</h2>
+<p><code>static_cast</code> can perform conversions between pointers to related classes, not only upcasts (from pointer-to-derived to pointer-to-base), but also downcasts (from pointer-to-base to pointer-to-derived). No checks are performed during runtime to guarantee that the object being converted is in fact a full object of the destination type. Therefore, it is up to the programmer to ensure that the conversion is safe. On the other side, it does not incur the overhead of the type-safety checks of <code>dynamic_cast</code>.</p>
+<p><code>static_cast</code>可以在指向相关类的指针之间执行转换，不仅是向上精度的转换（父类指针-&gt;子类指针），而且可以是(子类指针-&gt;父类指针), 运行时无“是否检查你这个对象是否彻彻底底对的上你要的对象”的检查，没有<code>dynamic_cast</code>那种安全检查</p>
+<p>比如下述代码是合法的</p>
+<pre tabindex="0"><code>class Base {};
+class Derived: public Base {};
+Base * a = new Base;
+Derived * b = static_cast&lt;Derived*&gt;(a);
+</code></pre><p>This would be valid code, although <code>b</code> would point to an incomplete object of the class and could lead to runtime errors if dereferenced. （这是一段合法的代码，尽管<code>b</code>对不上<code>a</code>）</p>
+<ul>
+<li>
+<p>Therefore, <code>static_cast</code> is able to perform with pointers to classes not only the conversions allowed implicitly, but also their opposite conversions.</p>
+</li>
+<li>
+<p>Convert from <code>void*</code> to any pointer type. In this case, it guarantees that if the <code>void*</code> value was obtained by converting from that same pointer type, the resulting pointer value is the same.</p>
+</li>
+</ul>
+<p>如下：</p>
+<pre tabindex="0"><code>int i, j;
+double slope = static_cast&lt;double&gt;(j) / i;
+void *p = &amp;d;
+double *dp = static_cast&lt;double*&gt;(p);
+</code></pre><ul>
+<li>Convert integers, floating-point values and enum types to enum types. （<code>int</code>，<code>float</code>转<code>enum</code>）</li>
+</ul>
+<h2 id="reinterpret_cast">
+  reinterpret_cast
+  <a class="anchor" href="#reinterpret_cast">#</a>
+</h2>
+<p>用<code>reinterpret_cast</code>对指针类型和整型或其它指针之间进行不安全的相互转换. 仅在你对所做一切了然于心时使用。</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

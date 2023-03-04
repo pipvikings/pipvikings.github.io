@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="std::make_shared#std::pair的first和second是第一个成员和第二个成员，第一个first和第二个second可以不一样
+// make_pair example#include &lt;utility&gt; // std::pair#include &lt;iostream&gt; // std::coutint main () {std::pair &lt;int,int&gt; foo;std::pair &lt;int,int&gt; bar;foo = std::make_pair (10,20);bar = std::make_pair (10.5,&#39;A&#39;); // ok: implicit conversion from pair&lt;double,char&gt;std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; foo.first &lt;&lt; &#34;, &#34; &lt;&lt; foo.second &lt;&lt; &#39;\n&#39;;std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; bar.first &lt;&lt; &#34;, &#34; &lt;&lt; bar.second &lt;&lt; &#39;\n&#39;;return 0;} // pair::operator= example#include &lt;utility&gt; // std::pair, std::make_pair#include &lt;string&gt; // std::string#include &lt;iostream&gt; // std::coutint main () {std::pair &lt;std::string,int&gt; planet, homeplanet;planet = std::make_pair(&#34;Earth&#34;,6371);homeplanet = planet;std::cout &lt;&lt; &#34;Home planet: &#34; &lt;&lt; homeplanet.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="shared_ptr的用例" />
+<meta property="og:description" content="std::make_shared#std::pair的first和second是第一个成员和第二个成员，第一个first和第二个second可以不一样
+// make_pair example#include &lt;utility&gt; // std::pair#include &lt;iostream&gt; // std::coutint main () {std::pair &lt;int,int&gt; foo;std::pair &lt;int,int&gt; bar;foo = std::make_pair (10,20);bar = std::make_pair (10.5,&#39;A&#39;); // ok: implicit conversion from pair&lt;double,char&gt;std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; foo.first &lt;&lt; &#34;, &#34; &lt;&lt; foo.second &lt;&lt; &#39;\n&#39;;std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; bar.first &lt;&lt; &#34;, &#34; &lt;&lt; bar.second &lt;&lt; &#39;\n&#39;;return 0;} // pair::operator= example#include &lt;utility&gt; // std::pair, std::make_pair#include &lt;string&gt; // std::string#include &lt;iostream&gt; // std::coutint main () {std::pair &lt;std::string,int&gt; planet, homeplanet;planet = std::make_pair(&#34;Earth&#34;,6371);homeplanet = planet;std::cout &lt;&lt; &#34;Home planet: &#34; &lt;&lt; homeplanet." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://pipvkings.github.io/docs/example/table-of-contents/shared_p/" /><meta property="article:section" content="docs" />
+
+
+<title>shared_ptr的用例 | 首頁介紹</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.a1bc3f1d714233dbb3581a7510c0be58c1aadad42dcdfaaecec1aaa38023c9e2.css" integrity="sha256-obw/HXFCM9uzWBp1EMC&#43;WMGq2tQtzfquzsGqo4AjyeI=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.f0c6fac7200a71399e3465a133f38930434c055e2ca71404d6ad0a7d22d66c03.js" integrity="sha256-8Mb6xyAKcTmeNGWhM/OJMENMBV4spxQE1q0KfSLWbAM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>首頁介紹</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Contents Post</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/" class="">After School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/meaning-of-work/" class="">上班的意義</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/after-school/2023scc/" class="">个人数据的标准合同条款</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/" class="">At School</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading/" class="">A Review at Operator Overloading</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cppio/" class="">C&#43;&#43; IO的简单复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/cpp_thread/" class="">C&#43;&#43;的线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/lseek/" class="">lseek和空洞文件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/shared_p/" class="active">shared_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/uniq_p/" class="">unique_ptr的用例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/operator-overloading-zh/" class="">对操作符重载的学习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/os-review/" class="">操作系统中的进程和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/smart_pointer/" class="">智能指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/type-casting-zh/" class="">浅谈C&#43;&#43;中的类型转换</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/sliding_windows_prot/" class="">滑动窗口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/example/table-of-contents/rawp/" class="">裸指针和其修饰字</a>
+  
+
+        </li>
+      
+    
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>shared_ptr的用例</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#stdmake_shared">std::make_shared</a></li>
+    <li><a href="#allocate_shared">allocate_shared</a></li>
+    <li><a href="#stdstatic_pointer_cast">std::static_pointer_cast</a></li>
+    <li><a href="#dynamic_pointer_cast">dynamic_pointer_cast</a></li>
+    <li><a href="#const-cast">const cast</a></li>
+    <li><a href="#get_deleter">get_deleter</a></li>
+    <li><a href="#swap">swap</a></li>
+    <li><a href="#operator-">operator &laquo;</a></li>
+    <li><a href="#relational-operator">relational operator</a></li>
+    <li><a href="#构造函数">构造函数</a></li>
+    <li><a href="#析构函数">析构函数</a></li>
+    <li><a href="#operator">operator=</a></li>
+    <li><a href="#swap-1">swap</a></li>
+    <li><a href="#get">get()</a></li>
+    <li><a href="#operator--">operator -&gt;</a></li>
+    <li><a href="#use_count">use_count()</a></li>
+    <li><a href="#unique">unique()</a></li>
+    <li><a href="#operator-bool">operator bool</a></li>
+    <li><a href="#stdshared_ptrowner_before">std::shared_ptr::owner_before</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="stdmake_shared">
+  std::make_shared
+  <a class="anchor" href="#stdmake_shared">#</a>
+</h2>
+<p><code>std::pair</code>的first和second是第一个成员和第二个成员，第一个first和第二个second可以不一样</p>
+<pre tabindex="0"><code>// make_pair example
+#include &lt;utility&gt;      // std::pair
+#include &lt;iostream&gt;     // std::cout
+
+int main () {
+  std::pair &lt;int,int&gt; foo;
+  std::pair &lt;int,int&gt; bar;
+
+  foo = std::make_pair (10,20);
+  bar = std::make_pair (10.5,&#39;A&#39;); // ok: implicit conversion from pair&lt;double,char&gt;
+
+  std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; foo.first &lt;&lt; &#34;, &#34; &lt;&lt; foo.second &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; bar.first &lt;&lt; &#34;, &#34; &lt;&lt; bar.second &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><pre tabindex="0"><code>// pair::operator= example
+#include &lt;utility&gt;      // std::pair, std::make_pair
+#include &lt;string&gt;       // std::string
+#include &lt;iostream&gt;     // std::cout
+
+int main () {
+  std::pair &lt;std::string,int&gt; planet, homeplanet;
+
+  planet = std::make_pair(&#34;Earth&#34;,6371);
+
+  homeplanet = planet;
+
+  std::cout &lt;&lt; &#34;Home planet: &#34; &lt;&lt; homeplanet.first &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;Planet size: &#34; &lt;&lt; homeplanet.second &lt;&lt; &#39;\n&#39;;
+  return 0;
+}
+</code></pre><p>我们发现里面有<code>std::shared_ptr&lt;int&gt; foo = std::make_shared&lt;int&gt; (10);</code>  same as: <code>std::shared_ptr&lt;int&gt; foo2 (new int(10));</code> 这个东西要注意有两种形式的构造</p>
+<pre tabindex="0"><code>// make_shared example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+
+  std::shared_ptr&lt;int&gt; foo = std::make_shared&lt;int&gt; (10);
+  // same as:
+  std::shared_ptr&lt;int&gt; foo2 (new int(10));
+
+  auto bar = std::make_shared&lt;int&gt; (20);
+
+  auto baz = std::make_shared&lt;std::pair&lt;int,int&gt;&gt; (30,40);
+
+  std::cout &lt;&lt; &#34;*foo: &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;*bar: &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;*baz: &#34; &lt;&lt; baz-&gt;first &lt;&lt; &#39; &#39; &lt;&lt; baz-&gt;second &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><h2 id="allocate_shared">
+  allocate_shared
+  <a class="anchor" href="#allocate_shared">#</a>
+</h2>
+<p>文档里有说 This function uses alloc to allocate storage for the object. A similar function, make_shared uses <code>::new</code> to allocate the storage instead. 这个是用alloc分配的</p>
+<pre tabindex="0"><code>// allocate_shared example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::allocator&lt;int&gt; alloc;    // the default allocator for int
+  std::default_delete&lt;int&gt; del; // the default deleter for int
+
+  std::shared_ptr&lt;int&gt; foo = std::allocate_shared&lt;int&gt; (alloc,10);
+
+  auto bar = std::allocate_shared&lt;int&gt; (alloc,20);
+
+  auto baz = std::allocate_shared&lt;std::pair&lt;int,int&gt;&gt; (alloc,30,40);
+
+  std::cout &lt;&lt; &#34;*foo: &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;*bar: &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;*baz: &#34; &lt;&lt; baz-&gt;first &lt;&lt; &#39; &#39; &lt;&lt; baz-&gt;second &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><h2 id="stdstatic_pointer_cast">
+  std::static_pointer_cast
+  <a class="anchor" href="#stdstatic_pointer_cast">#</a>
+</h2>
+<pre tabindex="0"><code>// static_pointer_cast example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+struct A {
+  static const char* static_type;
+  const char* dynamic_type;
+  A() { dynamic_type = static_type; }
+};
+struct B: A {
+  static const char* static_type;
+  B() { dynamic_type = static_type; }
+};
+
+const char* A::static_type = &#34;class A&#34;;
+const char* B::static_type = &#34;class B&#34;;
+
+int main () {
+  std::shared_ptr&lt;A&gt; foo;
+  std::shared_ptr&lt;B&gt; bar;
+
+  foo = std::make_shared&lt;A&gt;();
+
+  // cast of potentially incomplete object, but ok as a static cast:
+  bar = std::static_pointer_cast&lt;B&gt;(foo);
+
+  std::cout &lt;&lt; &#34;foo&#39;s static  type: &#34; &lt;&lt; foo-&gt;static_type &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;foo&#39;s dynamic type: &#34; &lt;&lt; foo-&gt;dynamic_type &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;bar&#39;s static  type: &#34; &lt;&lt; bar-&gt;static_type &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;bar&#39;s dynamic type: &#34; &lt;&lt; bar-&gt;dynamic_type &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><p>输出:</p>
+<pre tabindex="0"><code>foo&#39;s static  type: class A
+foo&#39;s dynamic type: class A
+bar&#39;s static  type: class B
+bar&#39;s dynamic type: class A
+</code></pre><ul>
+<li>首先，<code>const char* a::static_type = 'class a'</code>, 静态区成员<code>a::static_type</code>是 <code>'class a'</code>，</li>
+<li>然后，<code>const char* b::static_type = 'class b'</code>，静态区成员<code>b::static_type</code>是 <code>'class b'</code>，</li>
+<li>执行 <code>std::shared_ptr&lt; A &gt; foo; std::shared_ptr&lt; B &gt; bar</code>，<code>bar</code>和<code>foo</code>这两个现在是<code>null</code>了</li>
+<li>执行 <code>foo = std::make_shared&lt; A &gt;()</code> ，构造函数使得<code>foo</code>的：<code>const char* dynamic_type</code> 等于 <code>'class a'</code>，</li>
+<li>执行 <code>bar=std::static_pointer&lt; B &gt;(foo)</code>, <code>static_cast</code>使得：<code>bar</code>为<code>foo</code>的值，所以<code>bar</code>是<code>foo</code>了</li>
+<li>所以<code>foo</code>的值是：一个<code>a::static_type</code>是<code>class a</code>，一个dynamic type是class a</li>
+<li><code>bar</code>是<code>foo</code>，<code>bar</code>的dynamic type是<code>foo</code>的dynamic type，是<code>a</code></li>
+<li><code>bar</code>的static type没有变，因为<code>bar</code>的static type并不是<code>foo</code>的static type，即使<code>bar</code>变成了<code>foo</code>，也只是非静态区变了，静态区没变</li>
+</ul>
+<h2 id="dynamic_pointer_cast">
+  dynamic_pointer_cast
+  <a class="anchor" href="#dynamic_pointer_cast">#</a>
+</h2>
+<h2 id="const-cast">
+  const cast
+  <a class="anchor" href="#const-cast">#</a>
+</h2>
+<ul>
+<li>虽然cpp官网上对于普通指针的const cast讲解例子只写了如何去除一个const，但是它有明确的说一点&quot;either to be set or to be removed&quot;，所以我们可以猜出，去除 / 添加一个const在智能指针里也是合法的</li>
+</ul>
+<pre tabindex="0"><code>// static_pointer_cast example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::shared_ptr&lt;int&gt; foo;
+  std::shared_ptr&lt;const int&gt; bar;
+
+  foo = std::make_shared&lt;int&gt;(10);
+
+  bar = std::const_pointer_cast&lt;const int&gt;(foo);
+
+  std::cout &lt;&lt; &#34;*bar: &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+  *foo = 20;
+  std::cout &lt;&lt; &#34;*bar: &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><ul>
+<li>这个例子里，是说如何把一个<code>int*</code> 变成 <code>const int *</code> ,  c++ 的const cast大部分情况下是可以按照你预期的结果正常工作的，但是也有些许例外，这取决于如何声明、编译器如何优化。上面的例子里，输出结果是10和20</li>
+</ul>
+<h2 id="get_deleter">
+  get_deleter
+  <a class="anchor" href="#get_deleter">#</a>
+</h2>
+<pre tabindex="0"><code>// get_deleter example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+struct D {    // a verbose array deleter:
+  void operator()(int* p) {
+    std::cout &lt;&lt; &#34;[deleter called]\n&#34;;
+    delete[] p;
+  }
+};
+
+int main () {
+  std::shared_ptr&lt;int&gt; foo (new int[10],D());
+
+  int * bar = new int[20];
+
+  // use foo&#39;s deleter to delete bar (which is unmanaged):
+  (*std::get_deleter&lt;D&gt;(foo))(bar);
+
+  return 0;
+  // foo&#39;s deleter called automatically
+}
+</code></pre><p>首先这个例子初始化了一个有10单位长度智能指针，由于它声明的是<code>int</code>，然后第一个参数是一个<code>int[]</code>，所以普通的std deleter是不管用的，因为只删除首地址，所以要自定义删除器D</p>
+<pre tabindex="0"><code>struct D {
+    void operator()(int* p) {
+        std::cout &lt;&lt; &#34;&#34;;
+        delete[] p;
+    }
+}
+</code></pre><ul>
+<li>注意是谁<code>delete[] p</code>，这是手动构造删除器的目的</li>
+<li>但是下面还有一个int * bar = new int [20]这个东西</li>
+<li>然后我们用std::get_deleter&lt; D &gt; (foo) 可以删除foo，这个类型是一个删除器指针</li>
+<li>于是，我们可以连续指针操作:</li>
+</ul>
+<pre tabindex="0"><code>(*std::get_deleter&lt;D&gt;(foo)) // 还是一个删除器
+</code></pre><p>于是</p>
+<pre tabindex="0"><code>  (*std::get_deleter&lt;D&gt;(foo))(bar); // 删除bar
+</code></pre><ul>
+<li>网上有很多深刻的讨论关于为什么智能指针有两种获取deleter的方式，我觉得我是看不懂了，大概是unique的要设计成模版，为了保持低内存而不把deleter当作类内的一部分，shared并不太过care内存，所以两种获取方式也就可以理解了。</li>
+</ul>
+<h2 id="swap">
+  swap
+  <a class="anchor" href="#swap">#</a>
+</h2>
+<ul>
+<li>swap是重载的函数</li>
+</ul>
+<pre tabindex="0"><code>// shared_ptr swap specialization
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::shared_ptr&lt;int&gt; foo (new int(10));
+  std::shared_ptr&lt;int&gt; bar (new int(20));
+
+  swap(foo,bar);
+
+  std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><h2 id="operator-">
+  operator &laquo;
+  <a class="anchor" href="#operator-">#</a>
+</h2>
+<pre tabindex="0"><code>// shared_ptr i/o
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::shared_ptr&lt;int&gt; foo (new int (10));
+
+  std::cout &lt;&lt; &#34; foo: &#34; &lt;&lt; foo &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;*foo: &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><p>输出结果是</p>
+<pre tabindex="0"><code> foo: 0x920d90
+*foo: 10
+</code></pre><ul>
+<li>注：我还没有试过unique ptr是否有 <code>&lt;&lt;</code> 的 operator overloading ，反正文档上没有</li>
+</ul>
+<h2 id="relational-operator">
+  relational operator
+  <a class="anchor" href="#relational-operator">#</a>
+</h2>
+<ul>
+<li>不写了</li>
+</ul>
+<blockquote>
+<p>上述的所有东西统统都不是类函数</p>
+</blockquote>
+<p>下述例子来源 <a href="https://www.cnblogs.com/jiayayao/p/6128877.html">https://www.cnblogs.com/jiayayao/p/6128877.html</a></p>
+<pre tabindex="0"><code>#include &#34;stdafx.h&#34;
+#include &lt;iostream&gt;
+#include &lt;future&gt;
+#include &lt;thread&gt;
+
+using namespace std;
+class Person
+{
+public:
+    Person(int v) {
+        value = v;
+        std::cout &lt;&lt; &#34;Cons&#34; &lt;&lt;value&lt;&lt; std::endl;
+    }
+    ~Person() {
+        std::cout &lt;&lt; &#34;Des&#34; &lt;&lt;value&lt;&lt; std::endl;
+    }
+    int value;
+};
+
+int main()
+{
+    std::shared_ptr&lt;Person&gt; p1(new Person(1));// Person(1)的引用计数为1
+    std::shared_ptr&lt;Person&gt; p2 = std::make_shared&lt;Person&gt;(2);
+    p1.reset(new Person(3));// 首先生成新对象，然后引用计数减1，引用计数为0，故析构Person(1)
+                            // 最后将新对象的指针交给智能指针
+    std::shared_ptr&lt;Person&gt; p3 = p1;//现在p1和p3同时指向Person(3)，Person(3)的引用计数为2
+    p1.reset();//Person(3)的引用计数为1
+    p3.reset();//Person(3)的引用计数为0，析构Person(3)
+    return 0;
+}
+</code></pre><ul>
+<li>首先我们解释一下什么是引用计数，首先初始化一个shared ptr p1，然后其中的成员是new Person(1)</li>
+<li>内存布局可以理解为，一个heap区域的person类其地址为（假设为hp1），然后一个shared ptr在stack区，叫做p1</li>
+<li>然后同样的：heap区域的person类person(2)和其地址为hp2，然后一个shared ptr在stack区：p2</li>
+<li>p1 reset一个new person(3), 这个的解释过程为：首先在heap区new一个person 3，其地址为hp3，然后，执行reset函数，因为reset的目的永远是释放一个count，所以count - 1变成0，然后析构person(1)，所以，hp1消失,然后hp3交给p1，count自增</li>
+<li>然后复制一个shared ptr p3，值是p1，里面的内容也是一样的, 我们发现hp3既交给了p1也交给了p3，count为2</li>
+<li>p1.reset, count&ndash;</li>
+<li>p3.reset, count&ndash;</li>
+</ul>
+<blockquote>
+<p>所以我们可以发现，share ptr的share为什么是share? 它代表的是多个share指针共享一个堆资源</p>
+</blockquote>
+<p>疑问</p>
+<ul>
+<li>来源cpp prime的一句话：shared_ptr自动销毁所管理的对象
+当指向一个对象的最后一个shared_ptr被销毁时，shared_ptr类会自动销毁此对象，它是通过另一个特殊的成员函数-析构函数完成销毁工作的，类似于构造函数，每个类都有一个析构函数。析构函数控制对象销毁时做什么操作。析构函数一般用来释放对象所分配的资源。shared_ptr的析构函数会递减它所指向的对象的引用计数。如果引用计数变为0，shared_ptr的析构函数就会销毁对象，并释放它所占用的内存。</li>
+<li>然后不仅仅是这一个博客上有说：不要用一个原始指针初始化多个shared_ptr，原因在于，会造成二次销毁</li>
+</ul>
+<pre tabindex="0"><code>    int *p5 = new int;
+    std::shared_ptr&lt;int&gt; p6(p5);
+    std::shared_ptr&lt;int&gt; p7(p5);// logic error
+</code></pre><ul>
+<li>上述代码很好理解，二次销毁</li>
+</ul>
+<p>我的问题是，这篇文章的第一份代码不也是两个指针指向一个资源吗？为什么这个就没有错呢？</p>
+<p>答案是：第一份代码是两个智能指针有着一模一样的值，它是shared ptr（语义上），指向一个资源，它们在stack区域的值是一模一样的，=之间应该是有运算符重载的机制让count自增（代表了shared，所以count自增）</p>
+<p>但是第二个例子不对的地方在于，它并不是智能指针的赋值，它是让一个指针进入两个构造函数，所以count应该是无自增的机制的</p>
+<p>第一个例子由shared ptr自己的机制进行垃圾回收，根据count何时减到0</p>
+<ul>
+<li>另外，不要在函数实参中创建shared_ptr</li>
+</ul>
+<pre tabindex="0"><code>// 错
+function(shared_ptr&lt;int&gt;(new int), g());
+</code></pre><p>通过查阅文档我们发现unique ptr的默认删除器是支持释放数组对象的，如: std::unique_ptr&lt;int[]&gt; foo (new int[5]); 但是shared ptr 不支持[] ，所以我们要自定义deleter</p>
+<p>关于到底是int[]还是int，自定义（不自定义）deleter的问题，我直说了: 我看不懂，因为20，17，11三个版本的要求全不一样，感兴趣的参见这篇博客 <a href="https://www.cnblogs.com/apocelipes/p/10346928.html">https://www.cnblogs.com/apocelipes/p/10346928.html</a> 到时候开发就现查文档</p>
+<ul>
+<li>另外，注意unique ptr可以转shared ptr，反过来不可，比如</li>
+</ul>
+<pre tabindex="0"><code>#include &lt;iostream&gt;
+#include &lt;memory&gt;
+using namespace std;
+
+class A{
+public:
+    string id;
+    A(string id):id(id){cout&lt;&lt;id&lt;&lt;&#34;：构造函数&#34;&lt;&lt;endl;}
+    ~A(){cout&lt;&lt;id&lt;&lt;&#34;：析构函数&#34;&lt;&lt;endl;}
+};
+
+int main() {
+    unique_ptr&lt;A&gt; a(new A(&#34;unique_ptr&#34;));
+    shared_ptr&lt;A&gt; b = move(a);
+//    a = move(b);  // 报错
+//    a.reset(b.get());  // 运行错误
+    cout&lt;&lt;a.get()&lt;&lt;endl;
+    return 0;
+}
+</code></pre><ul>
+<li>用get拿到智能指针的裸指针之后删掉它，会导致智能指针运行错误</li>
+<li>不要用stack中的变量地址初始化一个smart pointer</li>
+</ul>
+<pre tabindex="0"><code>#include &lt;iostream&gt;
+#include &lt;memory&gt;
+using namespace std;
+
+class A{
+public:
+    string id;
+    A(string id):id(id){cout&lt;&lt;id&lt;&lt;&#34;：构造函数&#34;&lt;&lt;endl;}
+    ~A(){cout&lt;&lt;id&lt;&lt;&#34;：析构函数&#34;&lt;&lt;endl;}
+};
+
+A a(&#34;全局变量&#34;);
+
+int main() {
+    A b(&#34;局部变量&#34;);
+//    unique_ptr&lt;A&gt; pa(&amp;a); // 运行错误
+    unique_ptr&lt;A&gt; pa(&amp;b);
+    return 0;
+}
+</code></pre><p>谨慎使用智能指针的get与release方法</p>
+<ul>
+<li>通过unique_ptr.release()方法返回的裸指针，需要我们自己delete删除对象，因为调用release方法后，该unique_ptr不再拥有对象的所有权。</li>
+</ul>
+<p>循环引用问题待更</p>
+<p>继续详细的过一遍shared ptr的文档，这些是成员函数</p>
+<h2 id="构造函数">
+  构造函数
+  <a class="anchor" href="#%e6%9e%84%e9%80%a0%e5%87%bd%e6%95%b0">#</a>
+</h2>
+<pre tabindex="0"><code>// shared_ptr constructor example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+struct C {int* data;};
+
+int main () {
+  std::shared_ptr&lt;int&gt; p1;
+  std::shared_ptr&lt;int&gt; p2 (nullptr);
+  std::shared_ptr&lt;int&gt; p3 (new int);
+  std::shared_ptr&lt;int&gt; p4 (new int, std::default_delete&lt;int&gt;());
+  std::shared_ptr&lt;int&gt; p5 (new int, [](int* p){delete p;}, std::allocator&lt;int&gt;());
+  std::shared_ptr&lt;int&gt; p6 (p5);
+  std::shared_ptr&lt;int&gt; p7 (std::move(p6));
+  std::shared_ptr&lt;int&gt; p8 (std::unique_ptr&lt;int&gt;(new int));
+  std::shared_ptr&lt;C&gt; obj (new C);
+  std::shared_ptr&lt;int&gt; p9 (obj, obj-&gt;data);
+
+  std::cout &lt;&lt; &#34;use_count:\n&#34;;
+  std::cout &lt;&lt; &#34;p1: &#34; &lt;&lt; p1.use_count() &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;p2: &#34; &lt;&lt; p2.use_count() &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;p3: &#34; &lt;&lt; p3.use_count() &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;p4: &#34; &lt;&lt; p4.use_count() &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;p5: &#34; &lt;&lt; p5.use_count() &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;p6: &#34; &lt;&lt; p6.use_count() &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;p7: &#34; &lt;&lt; p7.use_count() &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;p8: &#34; &lt;&lt; p8.use_count() &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;p9: &#34; &lt;&lt; p9.use_count() &lt;&lt; &#39;\n&#39;;
+  return 0;
+}
+</code></pre><p>输出结果：</p>
+<pre tabindex="0"><code>use_count:
+p1: 0
+p2: 0
+p3: 1
+p4: 1
+p5: 2
+p6: 0
+p7: 2
+p8: 1
+p9: 2
+</code></pre><ul>
+<li>p1的ref count是0，p2的ref count是0，p3是1，p4是1，p5是1，p6是2，p5是2，p6因为move了变成0，p7是2, p8是1, p9涉及Aliasing constructor，看不懂，是2</li>
+</ul>
+<h2 id="析构函数">
+  析构函数
+  <a class="anchor" href="#%e6%9e%90%e6%9e%84%e5%87%bd%e6%95%b0">#</a>
+</h2>
+<pre tabindex="0"><code>// shared_ptr destructor example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  auto deleter = [](int*p){
+    std::cout &lt;&lt; &#34;[deleter called]\n&#34;; delete p;
+  };
+
+  std::shared_ptr&lt;int&gt; foo (new int,deleter);
+
+  std::cout &lt;&lt; &#34;use_count: &#34; &lt;&lt; foo.use_count() &lt;&lt; &#39;\n&#39;;
+
+  return 0;                        // [deleter called]
+}
+</code></pre><ul>
+<li>输出</li>
+</ul>
+<pre tabindex="0"><code>use_count: 1
+[deleter_called]
+</code></pre><ul>
+<li>我们可以看到，它自定义了一个deleter，这个deleter是个lambda表达式，然后&lt;&gt;里是没有那个unique ptr的deleter参数的</li>
+</ul>
+<h2 id="operator">
+  operator=
+  <a class="anchor" href="#operator">#</a>
+</h2>
+<pre tabindex="0"><code>// shared_ptr::operator= example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::shared_ptr&lt;int&gt; foo;
+  std::shared_ptr&lt;int&gt; bar (new int(10));
+
+  foo = bar;                          // copy
+
+  bar = std::make_shared&lt;int&gt; (20);   // move
+
+  std::unique_ptr&lt;int&gt; unique (new int(30));
+  foo = std::move(unique);            // move from unique_ptr
+
+  std::cout &lt;&lt; &#34;*foo: &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;*bar: &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><ul>
+<li>输出</li>
+</ul>
+<pre tabindex="0"><code>*foo: 30
+*bar: 20
+</code></pre><ul>
+<li>不解释了，没啥好解释的</li>
+</ul>
+<h2 id="swap-1">
+  swap
+  <a class="anchor" href="#swap-1">#</a>
+</h2>
+<pre tabindex="0"><code>// shared_ptr::swap example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::shared_ptr&lt;int&gt; foo (new int(10));
+  std::shared_ptr&lt;int&gt; bar (new int(20));
+
+  foo.swap(bar);
+
+  std::cout &lt;&lt; &#34;*foo: &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;*bar: &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><ul>
+<li>output</li>
+</ul>
+<pre tabindex="0"><code>*foo: 20
+*bar: 10
+</code></pre><ul>
+<li>没啥解释的</li>
+</ul>
+<h2 id="get">
+  get()
+  <a class="anchor" href="#get">#</a>
+</h2>
+<pre tabindex="0"><code>// shared_ptr::get example
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  int* p = new int (10);
+  std::shared_ptr&lt;int&gt; a (p);
+
+  if (a.get()==p)
+    std::cout &lt;&lt; &#34;a and p point to the same location\n&#34;;
+
+  // three ways of accessing the same address:
+  std::cout &lt;&lt; *a.get() &lt;&lt; &#34;\n&#34;;
+  std::cout &lt;&lt; *a &lt;&lt; &#34;\n&#34;;
+  std::cout &lt;&lt; *p &lt;&lt; &#34;\n&#34;;
+
+  return 0;
+}
+</code></pre><ul>
+<li>output</li>
+</ul>
+<pre tabindex="0"><code>a and p point to the same location
+10
+10
+10
+</code></pre><ul>
+<li>我们可以发现，不论是智能指针还是raw pointer，都是一个值，估计是智能指针对 *  做了overloading</li>
+</ul>
+<pre tabindex="0"><code>// shared_ptr::operator*
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::shared_ptr&lt;int&gt; foo (new int);
+  std::shared_ptr&lt;int&gt; bar (new int (100));
+
+  *foo = *bar * 2;
+
+  std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+  std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><ul>
+<li>output</li>
+</ul>
+<pre tabindex="0"><code>foo: 200
+bar: 100
+</code></pre><ul>
+<li>不解释了</li>
+</ul>
+<h2 id="operator--">
+  operator -&gt;
+  <a class="anchor" href="#operator--">#</a>
+</h2>
+<pre tabindex="0"><code>// shared_ptr::operator-&gt;
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+struct C { int a; int b; };
+
+int main () {
+  std::shared_ptr&lt;C&gt; foo;
+  std::shared_ptr&lt;C&gt; bar (new C);
+
+  foo = bar;
+
+  foo-&gt;a = 10;
+  bar-&gt;b = 20;
+
+  if (foo) std::cout &lt;&lt; &#34;foo: &#34; &lt;&lt; foo-&gt;a &lt;&lt; &#39; &#39; &lt;&lt; foo-&gt;b &lt;&lt; &#39;\n&#39;;
+  if (bar) std::cout &lt;&lt; &#34;bar: &#34; &lt;&lt; bar-&gt;a &lt;&lt; &#39; &#39; &lt;&lt; bar-&gt;b &lt;&lt; &#39;\n&#39;;
+
+  return 0;
+}
+</code></pre><ul>
+<li>output</li>
+</ul>
+<pre tabindex="0"><code>foo: 10 20
+bar: 10 20
+</code></pre><h2 id="use_count">
+  use_count()
+  <a class="anchor" href="#use_count">#</a>
+</h2>
+<ul>
+<li>
+<p>Returns the number of shared_ptr objects that share ownership over the same pointer as this object (including it).</p>
+</li>
+<li>
+<p>If this is an empty shared_ptr, the function returns zero.</p>
+</li>
+<li>
+<p>Library implementations are not required to keep a count of any particular set of owners, and thus it may not be efficient to call this function. To check specifically whether use_count is 1, you can use member unique instead, which may be faster. 让你用unique检测有么有至少一个引用</p>
+</li>
+</ul>
+<h2 id="unique">
+  unique()
+  <a class="anchor" href="#unique">#</a>
+</h2>
+<ul>
+<li>这是个bool的返回值</li>
+</ul>
+<pre tabindex="0"><code>// shared_ptr::unique
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::shared_ptr&lt;int&gt; foo;
+  std::shared_ptr&lt;int&gt; bar (new int);
+
+  std::cout &lt;&lt; &#34;foo unique?\n&#34; &lt;&lt; std::boolalpha;
+
+  std::cout &lt;&lt; &#34;1: &#34; &lt;&lt; foo.unique() &lt;&lt; &#39;\n&#39;;  // false (empty)
+
+  foo = bar;
+  std::cout &lt;&lt; &#34;2: &#34; &lt;&lt; foo.unique() &lt;&lt; &#39;\n&#39;;  // false (shared with bar)
+
+  bar = nullptr;
+  std::cout &lt;&lt; &#34;3: &#34; &lt;&lt; foo.unique() &lt;&lt; &#39;\n&#39;;  // true
+
+  return 0;
+}
+</code></pre><ul>
+<li>output</li>
+</ul>
+<pre tabindex="0"><code>foo unique?
+1: false
+2: false
+3: true
+</code></pre><h2 id="operator-bool">
+  operator bool
+  <a class="anchor" href="#operator-bool">#</a>
+</h2>
+<pre tabindex="0"><code>// example of shared_ptr::operator bool
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main () {
+  std::shared_ptr&lt;int&gt; foo;
+  std::shared_ptr&lt;int&gt; bar (new int(34));
+
+  if (foo) std::cout &lt;&lt; &#34;foo points to &#34; &lt;&lt; *foo &lt;&lt; &#39;\n&#39;;
+  else std::cout &lt;&lt; &#34;foo is null\n&#34;;
+
+  if (bar) std::cout &lt;&lt; &#34;bar points to &#34; &lt;&lt; *bar &lt;&lt; &#39;\n&#39;;
+  else std::cout &lt;&lt; &#34;bar is null\n&#34;;
+
+  return 0;
+}
+</code></pre><ul>
+<li>output</li>
+</ul>
+<pre tabindex="0"><code>foo is null
+bar points to 34
+</code></pre><h2 id="stdshared_ptrowner_before">
+  std::shared_ptr::owner_before
+  <a class="anchor" href="#stdshared_ptrowner_before">#</a>
+</h2>
+<p>这个涉及aliase constructor，我不会，待更</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#stdmake_shared">std::make_shared</a></li>
+    <li><a href="#allocate_shared">allocate_shared</a></li>
+    <li><a href="#stdstatic_pointer_cast">std::static_pointer_cast</a></li>
+    <li><a href="#dynamic_pointer_cast">dynamic_pointer_cast</a></li>
+    <li><a href="#const-cast">const cast</a></li>
+    <li><a href="#get_deleter">get_deleter</a></li>
+    <li><a href="#swap">swap</a></li>
+    <li><a href="#operator-">operator &laquo;</a></li>
+    <li><a href="#relational-operator">relational operator</a></li>
+    <li><a href="#构造函数">构造函数</a></li>
+    <li><a href="#析构函数">析构函数</a></li>
+    <li><a href="#operator">operator=</a></li>
+    <li><a href="#swap-1">swap</a></li>
+    <li><a href="#get">get()</a></li>
+    <li><a href="#operator--">operator -&gt;</a></li>
+    <li><a href="#use_count">use_count()</a></li>
+    <li><a href="#unique">unique()</a></li>
+    <li><a href="#operator-bool">operator bool</a></li>
+    <li><a href="#stdshared_ptrowner_before">std::shared_ptr::owner_before</a></li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
